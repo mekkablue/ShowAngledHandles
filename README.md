@@ -17,6 +17,7 @@ After installation, it will add the menu item *View > Show Angled Handles* (Cmd-
 ### License
 
 Copyright 2013 Rainer Erich Scheichelbauer (@mekkablue)
+Based on sample code by Georg Seifert (@schriftgestalt)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
