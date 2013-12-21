@@ -6,7 +6,7 @@ After installation, it will add the menu item *View > Show Angled Handles* (Cmd-
 
 ### Installation
 
-1. Move the .glyphsReporter folder to the *Plugins* folder inside the *Application Support* folder. Access the folder by selecting *Script > Open Scripts Folder* (Cmd-Shift-Y). Next to the *Scripts* folder, you should find a *Plugins* folder. If it doesn’t show, create it.
+1. Double click the .glyphsReporter file. Confirm the dialog that appears in Glyphs.
 2. Restart Glyphs
 
 ### Usage Instructions
