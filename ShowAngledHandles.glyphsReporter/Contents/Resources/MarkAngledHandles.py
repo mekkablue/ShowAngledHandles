@@ -116,7 +116,8 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		"""
 		Whatever you draw here will be displayed IN FRONT OF the paths.
 		Setting a color:
-			NSColor.colorWithRed_green_blue_alpha_( 1.0, 1.0, 1.0, 1.0 ).set() # sets RGBA values between 0.0 and 1.0
+			NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 1.0, 1.0, 1.0 ).set() # sets RGBA values between 0.0 and 1.0
+			NSColor.redColor().set() # predefined colors: blackColor, blueColor, brownColor, clearColor, cyanColor, darkGrayColor, grayColor, greenColor, lightGrayColor, magentaColor, orangeColor, purpleColor, redColor, whiteColor, yellowColor
 		Drawing a path:
 			myPath = NSBezierPath.alloc().init()  # initialize a path object myPath
 			myPath.appendBezierPath_( subpath )   # add subpath to myPath
@@ -128,7 +129,8 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		"""
 		try:
 			Scale = self.getScale() 
-			NSColor.colorWithRed_green_blue_alpha_( 1.0, 0.0, 0.0, 0.7 ).set()
+			# NSColor.redColor().set()
+			NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.0, 0.0, 0.7 ).set()
 			
 			redCircles = NSBezierPath.alloc().init()
 			
