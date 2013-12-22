@@ -4,6 +4,8 @@ This is a plugin for the [Glyphs font editor](http://glyphsapp.com/) by Georg Se
 It highlights BCPs (‘handles’) which are not horizontal or vertical.
 After installation, it will add the menu item *View > Show Angled Handles* (Cmd-Y).
 
+![Angled Handles are marked red.](ShowAngledHandles.png "Show Angled Handles Screenshot")
+
 ### Installation
 
 1. Download the complete ZIP file and unpack it, or clone the repository.
