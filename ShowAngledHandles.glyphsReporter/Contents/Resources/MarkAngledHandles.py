@@ -94,11 +94,11 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 							
 		return returnList
 		
-	def markerForPoint( self, thisPoint, thisRadius ):
+	def markerForPoint( self, thisPoint, markerWidth ):
 		"""
 		Returns a circle with thisRadius around thisPoint.
 		"""
-		myRect = NSRect( ( thisPoint.x - thisRadius, thisPoint.y - thisRadius ), ( thisRadius*2, thisRadius*2 ) )
+		myRect = NSRect( ( thisPoint.x - markerWidth * 0.5, thisPoint.y - markerWidth * 0.5 ), ( markerWidth, markerWidth ) )
 		return NSBezierPath.bezierPathWithOvalInRect_(myRect)
 		
 	def getScale( self ):
@@ -127,15 +127,26 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSBezierPath_Class/Reference/Reference.html
 		https://developer.apple.com/library/mac/documentation/cocoa/reference/applicationkit/classes/NSColor_Class/Reference/Reference.html
 		"""
+		
+		Selected = NSUserDefaults.standardUserDefaults().integerForKey_("GSHandleSize")
+		if Selected == 1:
+			HandleSize = 7 # Regular
+		elif Selected == 0:
+			HandleSize = 5
+		elif Selected == 2:
+			HandleSize = 10
+		else:
+			HandleSize = 7
+		
 		try:
 			Scale = self.getScale() 
 			# NSColor.redColor().set()
-			NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.0, 0.0, 0.7 ).set()
+			NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.9, 0.1, 0.1, 0.7 ).set()
 			
 			redCircles = NSBezierPath.alloc().init()
 			
 			for thisPoint in self.getListOfNodesToBeMarked( Layer ):
-				redCircles.appendBezierPath_( self.markerForPoint( thisPoint, 4.0 / Scale ) )
+				redCircles.appendBezierPath_( self.markerForPoint( thisPoint, HandleSize / Scale ) )
 				
 			redCircles.fill()
 			
