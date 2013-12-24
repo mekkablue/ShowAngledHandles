@@ -2,7 +2,8 @@
 # encoding: utf-8
 
 """
-Copyright 2013 Rainer Erich Scheichelbauer (mekkablue)
+Copyright 2013 Rainer Erich Scheichelbauer (@mekkablue).
+Based on a Template by Georg Seifert (@schriftgestalt).
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +17,7 @@ from Foundation import *
 from AppKit import *
 import sys, os, re
 
-GlyphsReporterProtocol = objc.protocolNamed( 'GlyphsReporter' )
+GlyphsReporterProtocol = objc.protocolNamed( "GlyphsReporter" )
 
 class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 	
@@ -59,7 +60,7 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		"""
 		Use any combination of these to determine the modifier keys for your default shortcut:
 		return NSShiftKeyMask | NSControlKeyMask | NSCommandKeyMask | NSAlternateKeyMask
-		Must return something.
+		Or: return 0. Must return something.
 		"""
 		return NSCommandKeyMask
 		
@@ -111,7 +112,23 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		except:
 			self.logToConsole( "Scale defaulting to 1.0" )
 			return 1.0
-			
+	
+	def getHandleSize( self ):
+		"""
+		Returns the current handle size as set in user preferences.
+		"""
+		try:
+			Selected = NSUserDefaults.standardUserDefaults().integerForKey_( "GSHandleSize" )
+			if Selected == 0:
+				return 5.0
+			elif Selected == 2:
+				return 10.0
+			else:
+				return 7.0 # Regular
+		except:
+			self.logToConsole( "HandleSize defaulting to 7.0" )
+			return 7.0
+		
 	def drawForegroundForLayer_( self, Layer ):
 		"""
 		Whatever you draw here will be displayed IN FRONT OF the paths.
@@ -128,17 +145,8 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		https://developer.apple.com/library/mac/documentation/cocoa/reference/applicationkit/classes/NSColor_Class/Reference/Reference.html
 		"""
 		
-		Selected = NSUserDefaults.standardUserDefaults().integerForKey_("GSHandleSize")
-		if Selected == 1:
-			HandleSize = 7 # Regular
-		elif Selected == 0:
-			HandleSize = 5
-		elif Selected == 2:
-			HandleSize = 10
-		else:
-			HandleSize = 7
-		
 		try:
+			HandleSize = self.getHandleSize()
 			Scale = self.getScale() 
 			# NSColor.redColor().set()
 			NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.9, 0.1, 0.1, 0.7 ).set()
