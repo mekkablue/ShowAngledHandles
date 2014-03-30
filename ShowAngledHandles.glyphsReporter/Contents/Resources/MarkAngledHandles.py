@@ -29,16 +29,11 @@ GlyphsReporterProtocol = objc.protocolNamed( "GlyphsReporter" )
 class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 	
 	def init( self ):
-		"""
-		Unless you know what you are doing, leave this at "return self".
-		"""
-		# Bundle = NSBundle.bundleForClass_( NSClassFromString( self.className() ));
 		return self
 	
 	def title( self ):
 		"""
 		This is the title of the trigger as it appears in the menu in combination with 'Show'.
-		E.g. return "Nodes" will 
 		"""
 		return "Angled Handles"
 		
@@ -46,13 +41,10 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		"""
 		Must return 1.
 		"""
-		return 1
-		
-	def groupID( self ):
-		"""
-		Determines the position in the toolbar if you have a toolbar icon.
-		"""
-		return 100
+		try:
+			return 1
+		except Exception as e:
+			self.logToConsole( "interfaceVersion: %s" % str(e) )
 		
 	def keyEquivalent( self ):
 		"""
@@ -61,7 +53,10 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		Pretty tricky to find a shortcut that is not taken yet, be careful.
 		If you are not sure, use 'return None', to let the users set their own shortcuts in System Prefs.
 		"""
-		return "y"
+		try:
+			return "y"
+		except Exception as e:
+			self.logToConsole( "keyEquivalent: %s" % str(e) )
 		
 	def modifierMask( self ):
 		"""
@@ -69,45 +64,46 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		return NSShiftKeyMask | NSControlKeyMask | NSCommandKeyMask | NSAlternateKeyMask
 		Or: return 0. Must return something.
 		"""
-		return NSCommandKeyMask
+		try:
+			return NSCommandKeyMask
+		except Exception as e:
+			self.logToConsole( "modifierMask: %s" % str(e) )
 		
-	def logToConsole( self, message ):
-		"""
-		The variable message will be passed to Console.app.
-		Use self.logToConsole("bla bla") for debugging.
-		"""
-		myLog = "Show %s plugin:\n%s" % ( self.title(), message )
-		NSLog( myLog )
-	
 	def getListOfNodesToBeMarked( self, thisLayer ):
 		"""
 		Returns a list of all BCPs on thisLayer that are not straight.
 		"""
-		returnList = []
+		try:
+			returnList = []
 		
-		for thisPath in thisLayer.paths:
-			for i in range( len( thisPath.nodes )):
-				thisNode = thisPath.nodes[ i ]
+			for thisPath in thisLayer.paths:
+				for i in range( len( thisPath.nodes )):
+					thisNode = thisPath.nodes[ i ]
 				
-				if thisNode.type == 65:
-					prevNode = thisPath.nodes[ i-1 ]
-					nextNode = thisPath.nodes[ i+1 ]
+					if thisNode.type == 65: # BCP
+						prevNode = thisPath.nodes[ i-1 ]
+						nextNode = thisPath.nodes[ i+1 ]
 					
-					if prevNode.type != 65:
-						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
-							returnList.append( thisNode )
-					elif nextNode.type != 65:
-						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
-							returnList.append( thisNode )
+						if prevNode.type != 65:
+							if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
+								returnList.append( thisNode )
+						elif nextNode.type != 65:
+							if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
+								returnList.append( thisNode )
 							
-		return returnList
+			return returnList
+		except Exception as e:
+			self.logToConsole( "getListOfNodesToBeMarked: %s" % str(e) )
 		
 	def markerForPoint( self, thisPoint, markerWidth ):
 		"""
 		Returns a circle with thisRadius around thisPoint.
 		"""
-		myRect = NSRect( ( thisPoint.x - markerWidth * 0.5, thisPoint.y - markerWidth * 0.5 ), ( markerWidth, markerWidth ) )
-		return NSBezierPath.bezierPathWithOvalInRect_(myRect)
+		try:
+			myRect = NSRect( ( thisPoint.x - markerWidth * 0.5, thisPoint.y - markerWidth * 0.5 ), ( markerWidth, markerWidth ) )
+			return NSBezierPath.bezierPathWithOvalInRect_(myRect)
+		except Exception as e:
+			self.logToConsole( "markerForPoint: %s" % str(e) )
 		
 	def getScale( self ):
 		"""
@@ -117,7 +113,7 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		try:
 			return self.controller.graphicView().scale()
 		except:
-			self.logToConsole( "Scale defaulting to 1.0" )
+			self.logToConsole( "getScale error: Scale defaulting to 1.0. %s" % str(e) )
 			return 1.0
 	
 	def getHandleSize( self ):
@@ -132,41 +128,26 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 				return 10.0
 			else:
 				return 7.0 # Regular
-		except:
-			self.logToConsole( "HandleSize defaulting to 7.0" )
+		except Exception as e:
+			self.logToConsole( "getHandleSize: HandleSize defaulting to 7.0. %s" % str(e) )
 			return 7.0
 		
 	def drawForegroundForLayer_( self, Layer ):
 		"""
 		Whatever you draw here will be displayed IN FRONT OF the paths.
-		Setting a color:
-			NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 1.0, 1.0, 1.0 ).set() # sets RGBA values between 0.0 and 1.0
-			NSColor.redColor().set() # predefined colors: blackColor, blueColor, brownColor, clearColor, cyanColor, darkGrayColor, grayColor, greenColor, lightGrayColor, magentaColor, orangeColor, purpleColor, redColor, whiteColor, yellowColor
-		Drawing a path:
-			myPath = NSBezierPath.alloc().init()  # initialize a path object myPath
-			myPath.appendBezierPath_( subpath )   # add subpath to myPath
-			myPath.fill()   # fill myPath with the current NSColor
-			myPath.stroke() # stroke myPath with the current NSColor
-		See:
-		https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSBezierPath_Class/Reference/Reference.html
-		https://developer.apple.com/library/mac/documentation/cocoa/reference/applicationkit/classes/NSColor_Class/Reference/Reference.html
 		"""
-		
 		try:
 			HandleSize = self.getHandleSize()
 			Scale = self.getScale() 
-			# NSColor.redColor().set()
 			NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.9, 0.1, 0.1, 0.7 ).set()
 			
 			redCircles = NSBezierPath.alloc().init()
-			
 			for thisPoint in self.getListOfNodesToBeMarked( Layer ):
 				redCircles.appendBezierPath_( self.markerForPoint( thisPoint, HandleSize / Scale ) )
 				
 			redCircles.fill()
-			
 		except Exception as e:
-			self.logToConsole( str(e) )
+			self.logToConsole( "drawForegroundForLayer_: %s" % str(e) )
 			
 	def drawBackgroundForLayer_( self, Layer ):
 		"""
@@ -184,4 +165,15 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		"""
 		Use self.controller as object for the current view controller.
 		"""
-		self.controller = Controller
+		try:
+			self.controller = Controller
+		except Exception as e:
+			self.logToConsole( "setController_: Could not set controller. %s" % str(e) )
+
+	def logToConsole( self, message ):
+		"""
+		The variable message will be passed to Console.app.
+		Use self.logToConsole("bla bla") for debugging.
+		"""
+		myLog = "Show %s plugin:\n%s" % ( self.title(), message )
+		NSLog( myLog )
