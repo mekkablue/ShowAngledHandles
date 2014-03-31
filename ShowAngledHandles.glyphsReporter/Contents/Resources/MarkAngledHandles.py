@@ -18,9 +18,9 @@ from AppKit import *
 import sys, os, re
 
 MainBundle = NSBundle.mainBundle()
-path = MainBundle.bundlePath()+"/Contents/Scripts"
+path = MainBundle.bundlePath() + "/Contents/Scripts"
 if not path in sys.path:
-	sys.path.append(path)
+	sys.path.append( path )
 
 import GlyphsApp
 
@@ -153,13 +153,19 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 		"""
 		Whatever you draw here will be displayed BEHIND the paths.
 		"""
-		pass
+		try:
+			pass
+		except Exception as e:
+			self.logToConsole( "drawBackgroundForLayer_: %s" % str(e) )
 		
 	def drawBackgroundForInactiveLayer_( self, Layer ):
 		"""
 		Whatever you draw here will be displayed behind the paths, but for inactive masters.
 		"""
-		pass
+		try:
+			pass
+		except Exception as e:
+			self.logToConsole( "drawBackgroundForInactiveLayer_: %s" % str(e) )
 		
 	def setController_( self, Controller ):
 		"""
