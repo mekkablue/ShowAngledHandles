@@ -17,6 +17,10 @@ After installation, it will add the menu item *View > Show Angled Handles* (Cmd-
 1. Open a glyph in Edit View.
 2. Use *View > Show Angled Handles* (Cmd-Y) to toggle the highlighting of of handles which are not completely straight.
 
+### Requirements
+
+The plugin needs Glyphs 1.4.3 or higher, running on OS X 10.7 or later. I can only test it in current OS versions, and I assume it will not work in versions of Mac OS X older than 10.7.
+
 ### License
 
 Copyright 2013 Rainer Erich Scheichelbauer (@mekkablue).
