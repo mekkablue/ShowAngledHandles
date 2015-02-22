@@ -18,12 +18,18 @@
 	<string>AngledHandlesReporter</string>
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.3</string>
+	<string>5</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.4</string>
+	<key>UpdateFeedURL</key>
+	<string>https://raw.githubusercontent.com/mekkablue/ShowAngledHandles/master/ShowAngledHandles.glyphsReporter/Contents/Info.plist</string>
+	<key>productPageURL</key>
+	<string>https://github.com/mekkablue/ShowAngledHandles</string>
+	<key>productReleaseNotes</key>
+	<string>Implemented update mechanism</string>
 	<key>LSHasLocalizedDisplayName</key>
 	<false/>
 	<key>NSAppleScriptEnabled</key>
