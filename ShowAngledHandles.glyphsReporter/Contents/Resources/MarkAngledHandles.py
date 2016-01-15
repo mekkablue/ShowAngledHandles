@@ -252,12 +252,18 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 								myLine.addNode_( prevNode.copy() )
 								myLine.addNode_( thisNode.copy() )
 								myLine.closed = False
-								myOnscreenLine = myLine.bezierPath()
+								myOnscreenLine = self.bezierPathComp(myLine)
 								myOnscreenLine.setLineCapStyle_( NSButtLineCapStyle )
 								myOnscreenLine.setLineWidth_( scaledLineWidth )
 								myOnscreenLine.stroke()
 		except Exception as e:
 			self.logToConsole( "markNonStraightLines: %s" % str(e) )
+	
+	def bezierPathComp( self, thisPath ):
+		try:
+			return thisPath.bezierPath() # until v2.2
+		except Exception as e:
+			return thisPath.bezierPath # v2.3+
 	
 	def markDuplicatePaths( self, thisLayer, zoomFactor ):
 		"""Marks Duplicate Paths"""
@@ -267,7 +273,7 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 				duplicateMarker = NSBezierPath.alloc().init()
 				
 				for thisIndex in listOfIndexes:
-					duplicatePathBezier = thisLayer.paths[thisIndex].bezierPath()
+					duplicatePathBezier = self.bezierPathComp( thisLayer.paths[thisIndex] )
 					duplicateMarker.appendBezierPath_( duplicatePathBezier )
 				
 				duplicateMarker.setLineCapStyle_( NSRoundLineCapStyle )
