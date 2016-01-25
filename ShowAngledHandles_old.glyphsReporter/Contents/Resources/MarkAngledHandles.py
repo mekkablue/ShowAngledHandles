@@ -260,6 +260,7 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 			self.logToConsole( "markNonStraightLines: %s" % str(e) )
 	
 	def bezierPathComp( self, thisPath ):
+		"""Compatibility method for bezierPath before v2.3."""
 		try:
 			return thisPath.bezierPath() # until v2.2
 		except Exception as e:

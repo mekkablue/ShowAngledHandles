@@ -1,8 +1,8 @@
 # ShowAngledHandles.glyphsReporter
 
-This is a plugin for the [Glyphs font editor](http://glyphsapp.com/) by Georg Seifert.
-It highlights BCPs (‘handles’) which are not horizontal or vertical, quite-but-not-completely-straight line segments, duplicate paths, and crossed handles.
-After installation, it will add the menu item *View > Show Angled Handles* (Cmd-Y).
+This is a plugin for the [Glyphs font editor](https://glyphsapp.com/) by Georg Seifert.
+It highlights BCPs (‘handles’) which are not horizontal or vertical, quite-but-not-completely-straight line segments, duplicate paths, crossed handles, and zero handles.
+After installation, it will add the menu item *View > Show Angled Handles* (Cmd-Y, German: *Ansicht > Schräge Anfasser anzeigen*).
 
 ![Angled Handles are marked red.](ShowAngledHandles.png "Show Angled Handles Screenshot")
 
@@ -19,12 +19,12 @@ After installation, it will add the menu item *View > Show Angled Handles* (Cmd-
 
 ### Requirements
 
-The plugin has been tested in Glyphs 2.2, running on OS X 10.9.5 or later. I can only test it in current OS versions, and I assume it will not work in much older versions.
+The plugin requires app version 2.3 (837) or later, running on OS X 10.9.1 or later. For older versions of Glyphs, use the `_old` file enclosed in the repository.
 
 ### License
 
 Copyright 2013 Rainer Erich Scheichelbauer (@mekkablue).
-Based on sample code by Georg Seifert (@schriftgestalt).
+Including sample code by Georg Seifert (@schriftgestalt) and Jan Gerner (@yanone).
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
