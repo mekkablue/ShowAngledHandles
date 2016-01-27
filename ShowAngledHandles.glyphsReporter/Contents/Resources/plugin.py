@@ -148,7 +148,7 @@ class ShowAngledHandles(ReporterPlugin):
 			theseNodes = thisPath.nodes
 			pathLength = len( theseNodes )
 			for thisNodeIndex in range(pathLength):
-				if theseNodes[thisNodeIndex].type == 35: #GSCURVE
+				if theseNodes[thisNodeIndex].type == GSCURVE: #GSCURVE
 					pointA = theseNodes[  thisNodeIndex    % pathLength ].position
 					pointB = theseNodes[ (thisNodeIndex-1) % pathLength ].position
 					pointC = theseNodes[ (thisNodeIndex-2) % pathLength ].position
@@ -174,14 +174,14 @@ class ShowAngledHandles(ReporterPlugin):
 			for i in range( len( thisPath.nodes )):
 				thisNode = thisPath.nodes[ i ]
 			
-				if thisNode.type == "offcurve": # BCP
+				if thisNode.type == GSOFFCURVE: # BCP
 					prevNode = thisPath.nodes[ i-1 ]
 					nextNode = thisPath.nodes[ i+1 ]
 				
-					if prevNode and prevNode.type != "offcurve":
+					if prevNode and prevNode.type != GSOFFCURVE:
 						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
 							returnList.append( thisNode )
-					elif nextNode and nextNode.type != "offcurve":
+					elif nextNode and nextNode.type != GSOFFCURVE:
 						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
 							returnList.append( thisNode )
 						
@@ -207,9 +207,9 @@ class ShowAngledHandles(ReporterPlugin):
 		for thisPath in thisLayer.paths:
 			for i in range( len( thisPath.nodes )):
 				thisNode = thisPath.nodes[ i ]
-				if thisNode.type != "offcurve": # on-curve
+				if thisNode.type != GSOFFCURVE: # on-curve
 					prevNode = thisPath.nodes[ i-1 ]
-					if prevNode and prevNode.type != "offcurve":
+					if prevNode and prevNode.type != GSOFFCURVE:
 						unstraightness = abs( thisNode.x - prevNode.x )
 						unstraightnessY = abs( thisNode.y - prevNode.y )
 						if unstraightness > unstraightnessY:
@@ -265,13 +265,13 @@ class ShowAngledHandles(ReporterPlugin):
 		for thisPath in thisLayer.paths:
 			for i in range(len(thisPath.nodes)):
 				thisNode = thisPath.nodes[i]
-				if thisNode.type == "offcurve":
+				if thisNode.type == GSOFFCURVE:
 					prevNode = thisPath.nodes[ i-1 ]
 					nextNode = thisPath.nodes[ i+1 ]
-					if prevNode.type != "offcurve":
+					if prevNode.type != GSOFFCURVE:
 						if prevNode.position == thisNode.position:
 							returnList.append( thisNode )
-					elif nextNode.type != "offcurve":
+					elif nextNode.type != GSOFFCURVE:
 						if nextNode.position == thisNode.position:
 							returnList.append( thisNode )
 		return returnList
@@ -284,13 +284,13 @@ class ShowAngledHandles(ReporterPlugin):
 		for thisPath in thisLayer.paths:
 			for i in range( len( thisPath.nodes )):
 				thisNode = thisPath.nodes[ i ]
-				if thisNode.type == "offcurve": # BCP
+				if thisNode.type == GSSOFFCURVE # BCP
 					prevNode = thisPath.nodes[ i-1 ]
 					nextNode = thisPath.nodes[ i+1 ]
-					if prevNode.type != "offcurve":
+					if prevNode.type != GSOFFCURVE:
 						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
 							returnList.append( thisNode )
-					elif nextNode.type != "offcurve":
+					elif nextNode.type != GSOFFCURVE:
 						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
 							returnList.append( thisNode )
 		return returnList
