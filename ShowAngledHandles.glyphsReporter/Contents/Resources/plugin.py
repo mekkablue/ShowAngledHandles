@@ -284,7 +284,7 @@ class ShowAngledHandles(ReporterPlugin):
 		for thisPath in thisLayer.paths:
 			for i in range( len( thisPath.nodes )):
 				thisNode = thisPath.nodes[ i ]
-				if thisNode.type == GSSOFFCURVE # BCP
+				if thisNode.type == GSOFFCURVE: # BCP
 					prevNode = thisPath.nodes[ i-1 ]
 					nextNode = thisPath.nodes[ i+1 ]
 					if prevNode.type != GSOFFCURVE:
