@@ -12,7 +12,7 @@
 ###########################################################################################################
 
 
-from GlyphsPlugins import *
+from GlyphsApp.plugins import *
 
 def subtractPoints( point1, point2 ):
 	"""Returns point2 - point1."""
