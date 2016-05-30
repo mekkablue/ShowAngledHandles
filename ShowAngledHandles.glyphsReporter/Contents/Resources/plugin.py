@@ -76,39 +76,47 @@ class ShowAngledHandles(ReporterPlugin):
 		self.keyboardShortcutModifier = NSCommandKeyMask
 		
 	def foreground(self, layer):
-		HandleSize = self.getHandleSize()
-		Scale = self.getScale()
-		zoomedHandleSize = HandleSize / Scale
-		
-		# mark angled handles:
-		NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.9, 0.1, 0.1, 0.7 ).set()
-		redCircles = NSBezierPath.alloc().init()
-		listOfAngledHandles = self.getListOfAngledHandles( layer )
-		for thisPoint in listOfAngledHandles:
-			redCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize ) )
-		redCircles.fill()
-		
-		# mark duplicate paths:
-		self.markDuplicatePaths( layer, Scale )
+		currentController = self.controller.view().window().windowController()
+		if currentController:
+		    tool = currentController.toolDrawDelegate()
+		    if not tool.isKindOfClass_( NSClassFromString("GlyphsToolText") ) and not tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") ): # don't activate if on cursor tool, or pan tool
+				HandleSize = self.getHandleSize()
+				Scale = self.getScale()
+				zoomedHandleSize = HandleSize / Scale
+				
+				# mark angled handles:
+				NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.9, 0.1, 0.1, 0.7 ).set()
+				redCircles = NSBezierPath.alloc().init()
+				listOfAngledHandles = self.getListOfAngledHandles( layer )
+				for thisPoint in listOfAngledHandles:
+					redCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize ) )
+				redCircles.fill()
+				
+				# mark duplicate paths:
+				self.markDuplicatePaths( layer, Scale )
 	
 	def background(self, layer):
-		HandleSize = self.getHandleSize()
-		scale = self.getScale()
-		zoomedHandleSize = HandleSize / scale
-		
-		# mark slanted lines:
-		self.markNonStraightLines( layer, zoomedHandleSize )
-		
-		# mark crossed BCPs:
-		self.markCrossedHandles( layer, scale )
-		
-		# mark zero handles:
-		NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.7, 0.1, 0.9, 0.7 ).set()
-		purpleCircles = NSBezierPath.alloc().init()
-		listOfZeroHandles = self.getListOfZeroHandles( layer )
-		for thisPoint in listOfZeroHandles:
-			purpleCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize*2 ) )
-		purpleCircles.fill()
+		currentController = self.controller.view().window().windowController()
+		if currentController:
+		    tool = currentController.toolDrawDelegate()
+		    if not tool.isKindOfClass_( NSClassFromString("GlyphsToolText") ) and not tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") ): # don't activate if on cursor tool, or pan tool
+				HandleSize = self.getHandleSize()
+				scale = self.getScale()
+				zoomedHandleSize = HandleSize / scale
+				
+				# mark slanted lines:
+				self.markNonStraightLines( layer, zoomedHandleSize )
+				
+				# mark crossed BCPs:
+				self.markCrossedHandles( layer, scale )
+				
+				# mark zero handles:
+				NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.7, 0.1, 0.9, 0.7 ).set()
+				purpleCircles = NSBezierPath.alloc().init()
+				listOfZeroHandles = self.getListOfZeroHandles( layer )
+				for thisPoint in listOfZeroHandles:
+					purpleCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize*2 ) )
+				purpleCircles.fill()
 		
 		
 	def roundDotForPoint( self, thisPoint, markerWidth ):
