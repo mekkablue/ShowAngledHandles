@@ -136,15 +136,22 @@ class ShowAngledHandles(ReporterPlugin):
 		lowerY = thisPoint.y - offset / zoomFactor
 		upperY = thisPoint.y + offset / zoomFactor
 		
-		# arms
+		# check for original linewidth:
+		oldLineWidth = NSBezierPath.defaultLineWidth()
+		NSBezierPath.setDefaultLineWidth_( 1.0 / zoomFactor )
+		
+		# arms:
 		NSColor.yellowColor().set()
 		NSBezierPath.strokeLineFromPoint_toPoint_( thisPoint, firstOnCurve )
 		NSBezierPath.strokeLineFromPoint_toPoint_( thisPoint, secondOnCurve )
 		
-		# cross
+		# cross:
 		NSColor.orangeColor().set()
 		NSBezierPath.strokeLineFromPoint_toPoint_( NSPoint(leftX,upperY), NSPoint(rightX,lowerY) )
 		NSBezierPath.strokeLineFromPoint_toPoint_( NSPoint(leftX,lowerY), NSPoint(rightX,upperY) )
+		
+		# restore original linewidth:
+		NSBezierPath.setDefaultLineWidth_( oldLineWidth )
 
 	def getListOfHandleCrossings( self, thisLayer ):
 		"""
@@ -260,7 +267,6 @@ class ShowAngledHandles(ReporterPlugin):
 			
 	def markCrossedHandles( self, thisLayer, zoomFactor ):
 		"""Marks crossed handles"""
-		NSBezierPath.setDefaultLineWidth_( 1.0 / zoomFactor )
 		for theseThreePoints in self.getListOfHandleCrossings( thisLayer ):
 			intersectionPoint = theseThreePoints[0]
 			firstOnCurve = theseThreePoints[1]
