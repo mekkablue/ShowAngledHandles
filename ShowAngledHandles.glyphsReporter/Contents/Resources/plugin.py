@@ -71,7 +71,11 @@ def intersectionWithNSPoints( pointA, pointB, pointC, pointD ):
 class ShowAngledHandles(ReporterPlugin):
 
 	def settings(self):
-		self.menuName = Glyphs.localize({'en': 'Angled Handles', 'de': u'Schräge Anfasser'})
+		self.menuName = Glyphs.localize({
+			'en': 'Angled Handles',
+			'de': u'schräge Anfasser',
+			'es': u'manejadores inclinados'
+		})
 		self.keyboardShortcut = "y"
 		self.keyboardShortcutModifier = NSCommandKeyMask
 		

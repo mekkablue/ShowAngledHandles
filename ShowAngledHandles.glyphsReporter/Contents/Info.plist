@@ -19,15 +19,15 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>15</string>
+	<string>16</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.5</string>
+	<string>2.0.6</string>
 	<key>UpdateFeedURL</key>
 	<string>https://raw.githubusercontent.com/mekkablue/ShowAngledHandles/master/ShowAngledHandles.glyphsReporter/Contents/Info.plist</string>
 	<key>productPageURL</key>
 	<string>https://github.com/mekkablue/ShowAngledHandles</string>
 	<key>productReleaseNotes</key>
-	<string>Fixed Line Width drawing. Thx @mark2mark!</string>
+	<string>Added Spanish localization (thx Valencia!)</string>
 	<key>LSHasLocalizedDisplayName</key>
 	<false/>
 	<key>NSAppleScriptEnabled</key>
