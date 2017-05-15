@@ -67,7 +67,6 @@ def intersectionWithNSPoints( pointA, pointB, pointC, pointD ):
 		print "intersectionWithNSPoints subroutine:", str(e)
 		return None
 
-
 class ShowAngledHandles(ReporterPlugin):
 
 	def settings(self):
@@ -76,14 +75,25 @@ class ShowAngledHandles(ReporterPlugin):
 			'de': u'schräge Anfasser',
 			'es': u'manejadores inclinados'
 		})
-		self.keyboardShortcut = "y"
+		
+		NSUserDefaults.standardUserDefaults().registerDefaults_(
+			{
+				"com.mekkablue.ShowAngledHandles.keyboardShortcut": "y",
+				"com.mekkablue.ShowAngledHandles.zeroHandles": True,
+				"com.mekkablue.ShowAngledHandles.almostStraightLines": True,
+				"com.mekkablue.ShowAngledHandles.laserBeams": True,
+				"com.mekkablue.ShowAngledHandles.duplicatePaths": True,
+			}
+		)
+		
+		self.keyboardShortcut = Glyphs.defaults["com.mekkablue.ShowAngledHandles.keyboardShortcut"]
 		self.keyboardShortcutModifier = NSCommandKeyMask
 		
 	def foreground(self, layer):
 		currentController = self.controller.view().window().windowController()
 		if currentController:
-		    tool = currentController.toolDrawDelegate()
-		    if not tool.isKindOfClass_( NSClassFromString("GlyphsToolText") ) and not tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") ): # don't activate if on cursor tool, or pan tool
+			tool = currentController.toolDrawDelegate()
+			if not tool.isKindOfClass_( NSClassFromString("GlyphsToolText") ) and not tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") ): # don't activate if on cursor tool, or pan tool
 				HandleSize = self.getHandleSize()
 				Scale = self.getScale()
 				zoomedHandleSize = HandleSize / Scale
@@ -97,30 +107,34 @@ class ShowAngledHandles(ReporterPlugin):
 				redCircles.fill()
 				
 				# mark duplicate paths:
-				self.markDuplicatePaths( layer, Scale )
+				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.duplicatePaths"]:
+					self.markDuplicatePaths( layer, Scale )
 	
 	def background(self, layer):
 		currentController = self.controller.view().window().windowController()
 		if currentController:
-		    tool = currentController.toolDrawDelegate()
-		    if not tool.isKindOfClass_( NSClassFromString("GlyphsToolText") ) and not tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") ): # don't activate if on cursor tool, or pan tool
+			tool = currentController.toolDrawDelegate()
+			if not tool.isKindOfClass_( NSClassFromString("GlyphsToolText") ) and not tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") ): # don't activate if on cursor tool, or pan tool
 				HandleSize = self.getHandleSize()
 				scale = self.getScale()
 				zoomedHandleSize = HandleSize / scale
 				
 				# mark slanted lines:
-				self.markNonStraightLines( layer, zoomedHandleSize )
+				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.almostStraightLines"]:
+					self.markNonStraightLines( layer, zoomedHandleSize )
 				
 				# mark crossed BCPs:
-				self.markCrossedHandles( layer, scale )
+				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.laserBeams"]:
+					self.markCrossedHandles( layer, scale )
 				
 				# mark zero handles:
-				NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.7, 0.1, 0.9, 0.7 ).set()
-				purpleCircles = NSBezierPath.alloc().init()
-				listOfZeroHandles = self.getListOfZeroHandles( layer )
-				for thisPoint in listOfZeroHandles:
-					purpleCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize*2 ) )
-				purpleCircles.fill()
+				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.zeroHandles"]:
+					NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.7, 0.1, 0.9, 0.7 ).set()
+					purpleCircles = NSBezierPath.alloc().init()
+					listOfZeroHandles = self.getListOfZeroHandles( layer )
+					for thisPoint in listOfZeroHandles:
+						purpleCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize*2 ) )
+					purpleCircles.fill()
 		
 		
 	def roundDotForPoint( self, thisPoint, markerWidth ):
@@ -312,4 +326,64 @@ class ShowAngledHandles(ReporterPlugin):
 						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
 							returnList.append( thisNode )
 		return returnList
+	
+	def conditionalContextMenus(self):
+		return [
+		{
+			'name': Glyphs.localize({'en': u"Zero Handles", 'de': u"Null-Anfasser", 'es': u"Manejadores zero"}), 
+			'action': self.toggleZeroHandles,
+			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.zeroHandles" ],
+		},
+		{
+			'name': Glyphs.localize({'en': u"Almost Straight Lines", 'de': u"Beinahe gerade Linien"}), 
+			'action': self.toggleAlmostStraightLines,
+			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.almostStraightLines" ],
+		},
+		{
+			'name': Glyphs.localize({'en': u"Laser Beams", 'de': u"Laserstrahlen"}), 
+			'action': self.toggleLaserBeams,
+			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.laserBeams" ],
+		},
+		{
+			'name': Glyphs.localize({'en': u"Duplicate Paths", 'de': u"Doppelte Pfade", 'es': u"Trazos duplicados"}), 
+			'action': self.toggleDuplicatePaths,
+			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.duplicatePaths" ],
+		},
+		]
 
+	
+	def toggleZeroHandles(self):
+		self.toggleSetting("zeroHandles")
+	
+	def toggleAlmostStraightLines(self):
+		self.toggleSetting("almostStraightLines")
+	
+	def toggleLaserBeams(self):
+		self.toggleSetting("laserBeams")
+	
+	def toggleDuplicatePaths(self):
+		self.toggleSetting("duplicatePaths")
+
+	def toggleSetting(self, prefName):
+		pref = "com.mekkablue.ShowAngledHandles.%s"%prefName
+		Glyphs.defaults[pref] = not bool(Glyphs.defaults[pref])
+	
+	def addMenuItemsForEvent_toMenu_(self, event, contextMenu):
+		'''
+		The event can tell you where the user had clicked.
+		'''
+		try:
+			
+			if self.generalContextMenus:
+				setUpMenuHelper(contextMenu, self.generalContextMenus, self)
+			
+			newSeparator = NSMenuItem.separatorItem()
+			contextMenu.addItem_(newSeparator)
+			
+			contextMenus = self.conditionalContextMenus()
+			if contextMenus:
+				setUpMenuHelper(contextMenu, contextMenus, self)
+		
+		except:
+			self.logError(traceback.format_exc())
+	
