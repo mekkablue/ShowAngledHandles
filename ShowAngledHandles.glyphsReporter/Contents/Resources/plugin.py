@@ -13,6 +13,7 @@
 
 
 from GlyphsApp.plugins import *
+from GlyphsApp import OFFCURVE
 
 def subtractPoints( point1, point2 ):
 	"""Returns point2 - point1."""
@@ -99,12 +100,11 @@ class ShowAngledHandles(ReporterPlugin):
 				zoomedHandleSize = HandleSize / Scale
 				
 				# mark angled handles:
-				NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.9, 0.1, 0.1, 0.7 ).set()
+				NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.1, 0.1, 0.6 ).set()
 				redCircles = NSBezierPath.alloc().init()
 				listOfAngledHandles = self.getListOfAngledHandles( layer )
 				for thisPoint in listOfAngledHandles:
-					redCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize ) )
-				redCircles.fill()
+					self.drawHandleForNode( thisPoint )
 				
 				# mark duplicate paths:
 				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.duplicatePaths"]:
@@ -135,8 +135,29 @@ class ShowAngledHandles(ReporterPlugin):
 					for thisPoint in listOfZeroHandles:
 						purpleCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize*2 ) )
 					purpleCircles.fill()
+	
+	def drawHandleForNode(self, node):
+			# calculate handle size:
+			handleSizes = (5, 8, 12) # possible user settings
+			handleSizeIndex = Glyphs.handleSize # user choice in Glyphs > Preferences > User Preferences > Handle Size
+			handleSize = handleSizes[handleSizeIndex]*self.getScale()**-0.9 # scaled diameter
 		
+			# offcurves are a little smaller:
+			if node.type == OFFCURVE:
+				handleSize *= 0.8
 		
+			# selected handles are a little bigger:
+			layerSelection = node.parent.parent.selection
+			if node.selected: # workaround for node.selected (currently broken)
+				handleSize *= 1.45
+		
+			# draw disc inside a rectangle around point position:
+			position = node.position
+			rect = NSRect()
+			rect.origin = NSPoint(position.x-handleSize/2, position.y-handleSize/2)
+			rect.size = NSSize(handleSize, handleSize)
+			NSBezierPath.bezierPathWithOvalInRect_(rect).fill()
+	
 	def roundDotForPoint( self, thisPoint, markerWidth ):
 		"""
 		Returns a circle with thisRadius around thisPoint.
