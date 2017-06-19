@@ -14,6 +14,17 @@
 
 from GlyphsApp.plugins import *
 from GlyphsApp import OFFCURVE
+import math
+
+def angleBetweenPoints( firstPoint, secondPoint ):
+	"""
+	Returns the angle (in degrees) of the straight line between firstPoint and secondPoint,
+	0 degrees being the second point to the right of first point.
+	firstPoint, secondPoint: must be NSPoint or GSNode
+	"""
+	xDiff = secondPoint.x - firstPoint.x
+	yDiff = secondPoint.y - firstPoint.y
+	return math.degrees(math.atan2(yDiff,xDiff))
 
 def subtractPoints( point1, point2 ):
 	"""Returns point2 - point1."""
@@ -84,6 +95,7 @@ class ShowAngledHandles(ReporterPlugin):
 				"com.mekkablue.ShowAngledHandles.almostStraightLines": True,
 				"com.mekkablue.ShowAngledHandles.laserBeams": True,
 				"com.mekkablue.ShowAngledHandles.duplicatePaths": True,
+				"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles": False,
 			}
 		)
 		
@@ -217,6 +229,8 @@ class ShowAngledHandles(ReporterPlugin):
 							returnList.append( [intersection, pointA, pointD] )
 							
 		return returnList
+		
+	
 			
 	def getListOfAngledHandles( self, thisLayer ):
 		"""
@@ -342,10 +356,24 @@ class ShowAngledHandles(ReporterPlugin):
 					nextNode = thisPath.nodes[ i+1 ]
 					if prevNode.type != GSOFFCURVE:
 						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
-							returnList.append( thisNode )
+							if not Glyphs.defaults["com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"]:
+								returnList.append( thisNode )
+							else:
+								angle = angleBetweenPoints( thisNode, prevNode ) % 90.0
+								diffX = abs(thisNode.x - prevNode.x)
+								diffY = abs(thisNode.y - prevNode.y)
+								if diffX <= 2.0 or diffY <= 2.0 or angle < 8.0 or angle > 82.0:
+									returnList.append( thisNode )
 					elif nextNode.type != GSOFFCURVE:
 						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
-							returnList.append( thisNode )
+							if not Glyphs.defaults["com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"]:
+								returnList.append( thisNode )
+							else:
+								angle = angleBetweenPoints( thisNode, nextNode ) % 90.0
+								diffX = abs(thisNode.x - nextNode.x)
+								diffY = abs(thisNode.y - nextNode.y)
+								if diffX <= 2.0 or diffY <= 2.0 or angle < 8.0 or angle > 82.0:
+									returnList.append( thisNode )
 		return returnList
 	
 	def conditionalContextMenus(self):
@@ -370,8 +398,15 @@ class ShowAngledHandles(ReporterPlugin):
 			'action': self.toggleDuplicatePaths,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.duplicatePaths" ],
 		},
+		{
+			'name': Glyphs.localize({'en': u"Only Mark Handles if they are Almost Straight", 'de': u"Anfasser nur markieren, wenn sie beinahe gerade sind", 'es': u"Mostrar manejadores sólo cuando están casi en línea recta"}), 
+			'action': self.toggleOnlyCloseHandles,
+			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles" ],
+		},
 		]
 
+	def toggleOnlyCloseHandles(self):
+		self.toggleSetting("onlyShowCloseToStraightHandles")
 	
 	def toggleZeroHandles(self):
 		self.toggleSetting("zeroHandles")
@@ -386,7 +421,7 @@ class ShowAngledHandles(ReporterPlugin):
 		self.toggleSetting("duplicatePaths")
 
 	def toggleSetting(self, prefName):
-		pref = "com.mekkablue.ShowAngledHandles.%s"%prefName
+		pref = "com.mekkablue.ShowAngledHandles.%s" % prefName
 		Glyphs.defaults[pref] = not bool(Glyphs.defaults[pref])
 	
 	def addMenuItemsForEvent_toMenu_(self, event, contextMenu):

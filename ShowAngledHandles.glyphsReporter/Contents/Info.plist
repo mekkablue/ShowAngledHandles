@@ -17,15 +17,15 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleVersion</key>
-	<string>18</string>
+	<string>19</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.11</string>
+	<string>2.2</string>
 	<key>UpdateFeedURL</key>
 	<string>https://raw.githubusercontent.com/mekkablue/ShowAngledHandles/master/ShowAngledHandles.glyphsReporter/Contents/Info.plist</string>
 	<key>productPageURL</key>
 	<string>https://github.com/mekkablue/ShowAngledHandles</string>
 	<key>productReleaseNotes</key>
-	<string>Selection state of angled handles is better discernible.</string>
+	<string>Add option to mark angled handles only when they are almost straight.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Rainer Erich Scheichelbauer, 2017</string>
 	<key>NSPrincipalClass</key>
