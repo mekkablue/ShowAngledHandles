@@ -85,7 +85,8 @@ class ShowAngledHandles(ReporterPlugin):
 		self.menuName = Glyphs.localize({
 			'en': 'Angled Handles',
 			'de': u'schräge Anfasser',
-			'es': u'manejadores inclinados'
+			'es': u'manejadores inclinados',
+			'fr': u'poignées inclinées',
 		})
 		
 		NSUserDefaults.standardUserDefaults().registerDefaults_(
@@ -227,10 +228,7 @@ class ShowAngledHandles(ReporterPlugin):
 					if intersection:
 						if rectAB.containsPoint_(intersection) or rectCD.containsPoint_(intersection):
 							returnList.append( [intersection, pointA, pointD] )
-							
 		return returnList
-		
-	
 			
 	def getListOfAngledHandles( self, thisLayer ):
 		"""
@@ -264,9 +262,10 @@ class ShowAngledHandles(ReporterPlugin):
 		for thisPathNumber in range( numberOfPaths ):
 			if thisPathNumber < (numberOfPaths - 1):
 				thisPath = thisLayer.paths[thisPathNumber]
+				thisPathDict = str(thisPath.pathDict()).replace(" SMOOTH", "")
 				for thatPathNumber in range( thisPathNumber + 1, numberOfPaths ):
 					thatPath = thisLayer.paths[thatPathNumber]
-					if thisPath.pathDict() == thatPath.pathDict():
+					if thisPathDict == str(thatPath.pathDict()).replace(" SMOOTH", ""):
 						indexesOfDuplicates.append( thatPathNumber )
 		return indexesOfDuplicates
 			
@@ -327,7 +326,7 @@ class ShowAngledHandles(ReporterPlugin):
 			self.drawCrossForPoint( intersectionPoint, firstOnCurve, secondOnCurve, zoomFactor )
 	
 	def getListOfZeroHandles(self, thisLayer):
-		"""Returns a list of all BCPs that are retracted into the neares oncurve point."""
+		"""Returns a list of all BCPs that are retracted into the nearest oncurve point."""
 		returnList = []
 		for thisPath in thisLayer.paths:
 			for i in range(len(thisPath.nodes)):
@@ -379,27 +378,27 @@ class ShowAngledHandles(ReporterPlugin):
 	def conditionalContextMenus(self):
 		return [
 		{
-			'name': Glyphs.localize({'en': u"Zero Handles", 'de': u"Null-Anfasser", 'es': u"Manejadores zero"}), 
+			'name': Glyphs.localize({'en': u"Zero Handles", 'de': u"Null-Anfasser", 'es': u"Manejadores zero", 'fr': u"poignées à zéro"}), 
 			'action': self.toggleZeroHandles,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.zeroHandles" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Almost Straight Lines", 'de': u"Beinahe gerade Linien"}), 
+			'name': Glyphs.localize({'en': u"Almost Straight Lines", 'de': u"Beinahe gerade Linien", 'fr': u"lignes presque orthogonales"}), 
 			'action': self.toggleAlmostStraightLines,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.almostStraightLines" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Laser Beams", 'de': u"Laserstrahlen"}), 
+			'name': Glyphs.localize({'en': u"Laser Beams", 'de': u"Laserstrahlen", 'fr': u"rayons lazer"}), 
 			'action': self.toggleLaserBeams,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.laserBeams" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Duplicate Paths", 'de': u"Doppelte Pfade", 'es': u"Trazos duplicados"}), 
+			'name': Glyphs.localize({'en': u"Duplicate Paths", 'de': u"Doppelte Pfade", 'es': u"Trazos duplicados", 'fr': u"tracés superposés"}), 
 			'action': self.toggleDuplicatePaths,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.duplicatePaths" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Only Mark Handles if they are Almost Straight", 'de': u"Anfasser nur markieren, wenn sie beinahe gerade sind", 'es': u"Mostrar manejadores sólo cuando están casi en línea recta"}), 
+			'name': Glyphs.localize({'en': u"Only Mark Handles if they are Almost Straight", 'de': u"Anfasser nur markieren, wenn sie beinahe gerade sind", 'es': u"Mostrar manejadores sólo cuando están casi en línea recta", 'fr': u"Indiquer seulement les poignées presque orthogonales"}), 
 			'action': self.toggleOnlyCloseHandles,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles" ],
 		},
