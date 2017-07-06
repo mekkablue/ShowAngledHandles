@@ -378,27 +378,27 @@ class ShowAngledHandles(ReporterPlugin):
 	def conditionalContextMenus(self):
 		return [
 		{
-			'name': Glyphs.localize({'en': u"Zero Handles", 'de': u"Null-Anfasser", 'es': u"Manejadores zero", 'fr': u"poignées à zéro"}), 
+			'name': Glyphs.localize({'en': u"Zero Handles", 'de': u"Null-Anfasser", 'es': u"Manejadores zero", 'fr': u"Poignées à zéro"}), 
 			'action': self.toggleZeroHandles,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.zeroHandles" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Almost Straight Lines", 'de': u"Beinahe gerade Linien", 'fr': u"lignes presque orthogonales"}), 
+			'name': Glyphs.localize({'en': u"Almost Straight Lines", 'de': u"Beinahe gerade Linien", 'es': u"Líneas casi ortogonales", 'fr': u"Lignes presque orthogonales"}), 
 			'action': self.toggleAlmostStraightLines,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.almostStraightLines" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Laser Beams", 'de': u"Laserstrahlen", 'fr': u"rayons lazer"}), 
+			'name': Glyphs.localize({'en': u"Laser Beams", 'de': u"Laserstrahlen", 'es': u"Rayos láser", 'fr': u"Rayons lazer"}), 
 			'action': self.toggleLaserBeams,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.laserBeams" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Duplicate Paths", 'de': u"Doppelte Pfade", 'es': u"Trazos duplicados", 'fr': u"tracés superposés"}), 
+			'name': Glyphs.localize({'en': u"Duplicate Paths", 'de': u"Doppelte Pfade", 'es': u"Trazos duplicados", 'fr': u"Tracés superposés"}), 
 			'action': self.toggleDuplicatePaths,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.duplicatePaths" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Only Mark Handles if they are Almost Straight", 'de': u"Anfasser nur markieren, wenn sie beinahe gerade sind", 'es': u"Mostrar manejadores sólo cuando están casi en línea recta", 'fr': u"Indiquer seulement les poignées presque orthogonales"}), 
+			'name': Glyphs.localize({'en': u"Only Mark Handles if they are Almost Straight", 'de': u"Anfasser nur markieren, wenn sie beinahe gerade sind", 'es': u"Marcar manejadores sólo cuando están casi en línea recta", 'fr': u"Indiquer seulement les poignées presque orthogonales"}), 
 			'action': self.toggleOnlyCloseHandles,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles" ],
 		},
