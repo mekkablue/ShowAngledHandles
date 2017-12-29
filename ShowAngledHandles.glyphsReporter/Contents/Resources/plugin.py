@@ -160,7 +160,6 @@ class ShowAngledHandles(ReporterPlugin):
 				handleSize *= 0.8
 		
 			# selected handles are a little bigger:
-			layerSelection = node.parent.parent.selection
 			if node.selected: # workaround for node.selected (currently broken)
 				handleSize *= 1.45
 		
