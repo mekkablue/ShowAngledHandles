@@ -377,6 +377,10 @@ class ShowAngledHandles(ReporterPlugin):
 	def conditionalContextMenus(self):
 		return [
 		{
+			'name': Glyphs.localize({'en': u"‘Show Angled Handles’ Options:", 'de': u"Einstellungen für »Schräge Anfasser anzeigen«:", 'es': u"Opciones para ‘Mostrar manejadores inclinados’:", 'fr': u"Options pour «Montrer poignées inclinées»"}), 
+			'action': None,
+		},
+		{
 			'name': Glyphs.localize({'en': u"Zero Handles", 'de': u"Null-Anfasser", 'es': u"Manejadores zero", 'fr': u"Poignées à zéro"}), 
 			'action': self.toggleZeroHandles,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.zeroHandles" ],
