@@ -12,8 +12,9 @@
 ###########################################################################################################
 
 
+import objc
+from GlyphsApp import *
 from GlyphsApp.plugins import *
-from GlyphsApp import OFFCURVE
 import math
 
 def angleBetweenPoints( firstPoint, secondPoint ):
