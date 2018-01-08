@@ -12,10 +12,10 @@
 ###########################################################################################################
 
 
-import objc
+import objc, math
 from GlyphsApp import *
 from GlyphsApp.plugins import *
-import math
+from AppKit import NSRoundLineCapStyle, NSButtLineCapStyle
 
 def angleBetweenPoints( firstPoint, secondPoint ):
 	"""
