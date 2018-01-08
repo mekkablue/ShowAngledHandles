@@ -29,77 +29,64 @@ def angleBetweenPoints( firstPoint, secondPoint ):
 
 def subtractPoints( point1, point2 ):
 	"""Returns point2 - point1."""
-	try:
-		return NSPoint( point2.x - point1.x, point2.y - point1.y )
-	except Exception as e:
-		print "subtractPoints subroutine:", str(e)
-		return None
+	return NSPoint( point2.x - point1.x, point2.y - point1.y )
 
 def intersectionWithNSPoints( pointA, pointB, pointC, pointD ):
 	"""
 	Returns an NSPoint of the intersection AB with CD.
 	Or False if there is no intersection
 	"""
+	x1, y1 = pointA.x, pointA.y
+	x2, y2 = pointB.x, pointB.y
+	x3, y3 = pointC.x, pointC.y
+	x4, y4 = pointD.x, pointD.y
+	
 	try:
-		x1, y1 = pointA.x, pointA.y
-		x2, y2 = pointB.x, pointB.y
-		x3, y3 = pointC.x, pointC.y
-		x4, y4 = pointD.x, pointD.y
+		slope12 = ( float(y2) - float(y1) ) / ( float(x2) - float(x1) )
+	except:
+		# division by zero if vertical
+		slope12 = None
 		
-		try:
-			slope12 = ( float(y2) - float(y1) ) / ( float(x2) - float(x1) )
-		except:
-			# division by zero if vertical
-			slope12 = None
-			
-		try:
-			slope34 = ( float(y4) - float(y3) ) / ( float(x4) - float(x3) )
-		except:
-			# division by zero if vertical
-			slope34 = None
-		
-		if slope12 == slope34:
-			# parallel, no intersection
-			return None
-		elif slope12 is None:
-			# first line is vertical
-			x = x1
-			y = slope34 * ( x - x3 ) + y3
-		elif slope34 is None:
-			# second line is vertical
-			x = x3
-			y = slope12 * ( x - x1 ) + y1
-		else:
-			# both lines have an angle
-			x = ( slope12 * x1 - y1 - slope34 * x3 + y3 ) / ( slope12 - slope34 )
-			y = slope12 * ( x - x1 ) + y1
-			
-		return NSPoint( x, y )
-		
-	except Exception as e:
-		print "intersectionWithNSPoints subroutine:", str(e)
+	try:
+		slope34 = ( float(y4) - float(y3) ) / ( float(x4) - float(x3) )
+	except:
+		# division by zero if vertical
+		slope34 = None
+	
+	if slope12 == slope34:
+		# parallel, no intersection
 		return None
+	elif slope12 is None:
+		# first line is vertical
+		x = x1
+		y = slope34 * ( x - x3 ) + y3
+	elif slope34 is None:
+		# second line is vertical
+		x = x3
+		y = slope12 * ( x - x1 ) + y1
+	else:
+		# both lines have an angle
+		x = ( slope12 * x1 - y1 - slope34 * x3 + y3 ) / ( slope12 - slope34 )
+		y = slope12 * ( x - x1 ) + y1
+		
+	return NSPoint( x, y )
 
 class ShowAngledHandles(ReporterPlugin):
 
 	def settings(self):
 		self.menuName = Glyphs.localize({
-			'en': 'Angled Handles',
+			'en': u'Angled Handles',
 			'de': u'schräge Anfasser',
 			'es': u'manejadores inclinados',
 			'fr': u'poignées inclinées',
 		})
 		
-		NSUserDefaults.standardUserDefaults().registerDefaults_(
-			{
-				"com.mekkablue.ShowAngledHandles.keyboardShortcut": "y",
-				"com.mekkablue.ShowAngledHandles.zeroHandles": True,
-				"com.mekkablue.ShowAngledHandles.almostStraightLines": True,
-				"com.mekkablue.ShowAngledHandles.laserBeams": True,
-				"com.mekkablue.ShowAngledHandles.duplicatePaths": True,
-				"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles": False,
-			}
-		)
+		Glyphs.registerDefault("com.mekkablue.ShowAngledHandles.keyboardShortcut", "y")
+		Glyphs.registerDefault("com.mekkablue.ShowAngledHandles.zeroHandles", True)
+		Glyphs.registerDefault("com.mekkablue.ShowAngledHandles.almostStraightLines", True)
+		Glyphs.registerDefault("com.mekkablue.ShowAngledHandles.laserBeams", True)
+		Glyphs.registerDefault("com.mekkablue.ShowAngledHandles.duplicatePaths", True)
+		Glyphs.registerDefault("com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles", False)
 		
 		self.keyboardShortcut = Glyphs.defaults["com.mekkablue.ShowAngledHandles.keyboardShortcut"]
 		self.keyboardShortcutModifier = NSCommandKeyMask
@@ -151,25 +138,25 @@ class ShowAngledHandles(ReporterPlugin):
 					purpleCircles.fill()
 	
 	def drawHandleForNode(self, node):
-			# calculate handle size:
-			handleSizes = (5, 8, 12) # possible user settings
-			handleSizeIndex = Glyphs.handleSize # user choice in Glyphs > Preferences > User Preferences > Handle Size
-			handleSize = handleSizes[handleSizeIndex]*self.getScale()**-0.9 # scaled diameter
-		
-			# offcurves are a little smaller:
-			if node.type == OFFCURVE:
-				handleSize *= 0.8
-		
-			# selected handles are a little bigger:
-			if node.selected: # workaround for node.selected (currently broken)
-				handleSize *= 1.45
-		
-			# draw disc inside a rectangle around point position:
-			position = node.position
-			rect = NSRect()
-			rect.origin = NSPoint(position.x-handleSize/2, position.y-handleSize/2)
-			rect.size = NSSize(handleSize, handleSize)
-			NSBezierPath.bezierPathWithOvalInRect_(rect).fill()
+		# calculate handle size:
+		handleSizes = (5, 8, 12) # possible user settings
+		handleSizeIndex = Glyphs.handleSize # user choice in Glyphs > Preferences > User Preferences > Handle Size
+		handleSize = handleSizes[handleSizeIndex]*self.getScale()**-0.9 # scaled diameter
+	
+		# offcurves are a little smaller:
+		if node.type == OFFCURVE:
+			handleSize *= 0.8
+	
+		# selected handles are a little bigger:
+		if node.selected: # workaround for node.selected (currently broken)
+			handleSize *= 1.45
+	
+		# draw disc inside a rectangle around point position:
+		position = node.position
+		rect = NSRect()
+		rect.origin = NSPoint(position.x-handleSize/2, position.y-handleSize/2)
+		rect.size = NSSize(handleSize, handleSize)
+		NSBezierPath.bezierPathWithOvalInRect_(rect).fill()
 	
 	def roundDotForPoint( self, thisPoint, markerWidth ):
 		"""
@@ -428,21 +415,13 @@ class ShowAngledHandles(ReporterPlugin):
 		Glyphs.defaults[pref] = not bool(Glyphs.defaults[pref])
 	
 	def addMenuItemsForEvent_toMenu_(self, event, contextMenu):
-		'''
-		The event can tell you where the user had clicked.
-		'''
-		try:
-			
-			if self.generalContextMenus:
-				setUpMenuHelper(contextMenu, self.generalContextMenus, self)
-			
-			newSeparator = NSMenuItem.separatorItem()
-			contextMenu.addItem_(newSeparator)
-			
-			contextMenus = self.conditionalContextMenus()
-			if contextMenus:
-				setUpMenuHelper(contextMenu, contextMenus, self)
+		if self.generalContextMenus:
+			setUpMenuHelper(contextMenu, self.generalContextMenus, self)
 		
-		except:
-			self.logError(traceback.format_exc())
+		newSeparator = NSMenuItem.separatorItem()
+		contextMenu.addItem_(newSeparator)
+		
+		contextMenus = self.conditionalContextMenus()
+		if contextMenus:
+			setUpMenuHelper(contextMenu, contextMenus, self)
 	
