@@ -13,17 +13,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 """
 
 import objc
-from Foundation import *
-from AppKit import *
 import sys, os, re
-
-MainBundle = NSBundle.mainBundle()
-path = MainBundle.bundlePath()+"/Contents/Scripts"
-if not path in sys.path:
-	sys.path.append(path)
-
-import GlyphsApp
-
+from GlyphsApp import OFFCURVE
+from GlyphsApp.plugins import *
 GlyphsReporterProtocol = objc.protocolNamed( "GlyphsReporter" )
 
 class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
