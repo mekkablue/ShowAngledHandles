@@ -156,10 +156,10 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 				redCircles.appendBezierPath_( self.markerForPoint( thisPoint, HandleSize / Scale ) )
 				
 			redCircles.fill()
-			
-		except Exception as e:
-			self.logToConsole( str(e) )
-			
+		except:
+			import traceback
+			print traceback.format_exc()
+	
 	def drawBackgroundForLayer_( self, Layer ):
 		"""
 		Whatever you draw here will be displayed BEHIND the paths.
