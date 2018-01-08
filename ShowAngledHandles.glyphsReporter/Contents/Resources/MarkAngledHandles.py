@@ -81,14 +81,14 @@ class AngledHandlesReporter ( NSObject, GlyphsReporterProtocol ):
 			for i in range( len( thisPath.nodes )):
 				thisNode = thisPath.nodes[ i ]
 				
-				if thisNode.type == 65:
+				if thisNode.type == OFFCURVE:
 					prevNode = thisPath.nodes[ i-1 ]
 					nextNode = thisPath.nodes[ i+1 ]
 					
-					if prevNode.type != 65:
+					if prevNode.type != OFFCURVE:
 						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
 							returnList.append( thisNode )
-					elif nextNode.type != 65:
+					elif nextNode.type != OFFCURVE:
 						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
 							returnList.append( thisNode )
 							
