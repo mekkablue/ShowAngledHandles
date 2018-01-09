@@ -12,8 +12,8 @@
 ###########################################################################################################
 
 
-import objc, math
-from GlyphsApp import *
+import math
+from GlyphsApp import OFFCURVE, GSCURVE, GSPath
 from GlyphsApp.plugins import *
 from AppKit import NSRoundLineCapStyle, NSButtLineCapStyle
 
@@ -227,14 +227,14 @@ class ShowAngledHandles(ReporterPlugin):
 			for i in range( len( thisPath.nodes )):
 				thisNode = thisPath.nodes[ i ]
 			
-				if thisNode.type == GSOFFCURVE: # BCP
+				if thisNode.type == OFFCURVE: # BCP
 					prevNode = thisPath.nodes[ i-1 ]
 					nextNode = thisPath.nodes[ i+1 ]
 				
-					if prevNode and prevNode.type != GSOFFCURVE:
+					if prevNode and prevNode.type != OFFCURVE:
 						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
 							returnList.append( thisNode )
-					elif nextNode and nextNode.type != GSOFFCURVE:
+					elif nextNode and nextNode.type != OFFCURVE:
 						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
 							returnList.append( thisNode )
 						
@@ -261,9 +261,9 @@ class ShowAngledHandles(ReporterPlugin):
 		for thisPath in thisLayer.paths:
 			for i in range( len( thisPath.nodes )):
 				thisNode = thisPath.nodes[ i ]
-				if thisNode.type != GSOFFCURVE: # on-curve
+				if thisNode.type != OFFCURVE: # on-curve
 					prevNode = thisPath.nodes[ i-1 ]
-					if prevNode and prevNode.type != GSOFFCURVE:
+					if prevNode and prevNode.type != OFFCURVE:
 						unstraightness = abs( thisNode.x - prevNode.x )
 						unstraightnessY = abs( thisNode.y - prevNode.y )
 						if unstraightness > unstraightnessY:
@@ -318,13 +318,13 @@ class ShowAngledHandles(ReporterPlugin):
 		for thisPath in thisLayer.paths:
 			for i in range(len(thisPath.nodes)):
 				thisNode = thisPath.nodes[i]
-				if thisNode.type == GSOFFCURVE:
+				if thisNode.type == OFFCURVE:
 					prevNode = thisPath.nodes[ i-1 ]
 					nextNode = thisPath.nodes[ i+1 ]
-					if prevNode.type != GSOFFCURVE:
+					if prevNode.type != OFFCURVE:
 						if prevNode.position == thisNode.position:
 							returnList.append( thisNode )
-					elif nextNode.type != GSOFFCURVE:
+					elif nextNode.type != OFFCURVE:
 						if nextNode.position == thisNode.position:
 							returnList.append( thisNode )
 		return returnList
@@ -337,10 +337,10 @@ class ShowAngledHandles(ReporterPlugin):
 		for thisPath in thisLayer.paths:
 			for i in range( len( thisPath.nodes )):
 				thisNode = thisPath.nodes[ i ]
-				if thisNode.type == GSOFFCURVE: # BCP
+				if thisNode.type == OFFCURVE: # BCP
 					prevNode = thisPath.nodes[ i-1 ]
 					nextNode = thisPath.nodes[ i+1 ]
-					if prevNode.type != GSOFFCURVE:
+					if prevNode.type != OFFCURVE:
 						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
 							if not Glyphs.defaults["com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"]:
 								returnList.append( thisNode )
@@ -350,7 +350,7 @@ class ShowAngledHandles(ReporterPlugin):
 								diffY = abs(thisNode.y - prevNode.y)
 								if diffX <= 2.0 or diffY <= 2.0 or angle < 8.0 or angle > 82.0:
 									returnList.append( thisNode )
-					elif nextNode.type != GSOFFCURVE:
+					elif nextNode.type != OFFCURVE:
 						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
 							if not Glyphs.defaults["com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"]:
 								returnList.append( thisNode )
