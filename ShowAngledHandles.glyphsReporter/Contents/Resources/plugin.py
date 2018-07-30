@@ -78,7 +78,7 @@ class ShowAngledHandles(ReporterPlugin):
 			'en': u'Angled Handles',
 			'de': u'schräge Anfasser',
 			'es': u'manejadores inclinados',
-			'fr': u'poignées inclinées',
+			'fr': u'les poignées inclinées',
 		})
 		
 		Glyphs.registerDefault("com.mekkablue.ShowAngledHandles.keyboardShortcut", "y")
