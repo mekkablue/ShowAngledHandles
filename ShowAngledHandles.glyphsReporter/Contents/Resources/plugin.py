@@ -379,7 +379,7 @@ class ShowAngledHandles(ReporterPlugin):
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.almostStraightLines" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Laser Beams", 'de': u"Laserstrahlen", 'es': u"Rayos láser", 'fr': u"Rayons lazer"}), 
+			'name': Glyphs.localize({'en': u"Laser Beams", 'de': u"Laserstrahlen", 'es': u"Rayos láser", 'fr': u"Rayons laser"}), 
 			'action': self.toggleLaserBeams,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.laserBeams" ],
 		},
