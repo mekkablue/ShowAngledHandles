@@ -76,9 +76,10 @@ class ShowAngledHandles(ReporterPlugin):
 	def settings(self):
 		self.menuName = Glyphs.localize({
 			'en': u'Angled Handles',
-			'de': u'schräge Anfasser',
+			'de': u'Schräge Anfasser',
 			'es': u'manejadores inclinados',
 			'fr': u'les poignées inclinées',
+			'zh': u'辅助摇臂水平或垂直',
 		})
 		
 		Glyphs.registerDefault("com.mekkablue.ShowAngledHandles.keyboardShortcut", "y")
@@ -365,31 +366,67 @@ class ShowAngledHandles(ReporterPlugin):
 	def conditionalContextMenus(self):
 		return [
 		{
-			'name': Glyphs.localize({'en': u"‘Show Angled Handles’ Options:", 'de': u"Einstellungen für »Schräge Anfasser anzeigen«:", 'es': u"Opciones para ‘Mostrar manejadores inclinados’:", 'fr': u"Options pour «Montrer poignées inclinées»"}), 
+			'name': Glyphs.localize({
+				'en': u"‘Show Angled Handles’ Options:", 
+				'de': u"Einstellungen für »Schräge Anfasser anzeigen«:", 
+				'es': u"Opciones para ‘Mostrar manejadores inclinados’:", 
+				'fr': u"Options pour «Montrer poignées inclinées»",
+				'zh': u"路径摇臂纠正辅助",
+			}), 
 			'action': None,
 		},
 		{
-			'name': Glyphs.localize({'en': u"Zero Handles", 'de': u"Null-Anfasser", 'es': u"Manejadores zero", 'fr': u"Poignées à zéro"}), 
+			'name': Glyphs.localize({
+				'en': u"Zero Handles", 
+				'de': u"Null-Anfasser", 
+				'es': u"Manejadores zero", 
+				'fr': u"Poignées à zéro", 
+				'zh': u"单摇臂查找", 
+			}), 
 			'action': self.toggleZeroHandles,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.zeroHandles" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Almost Straight Lines", 'de': u"Beinahe gerade Linien", 'es': u"Líneas casi ortogonales", 'fr': u"Lignes presque orthogonales"}), 
+			'name': Glyphs.localize({
+				'en': u"Almost Straight Lines", 
+				'de': u"Beinahe gerade Linien", 
+				'es': u"Líneas casi ortogonales", 
+				'fr': u"Lignes presque orthogonales", 
+				'zh': u"垂直辅助", 
+			}), 
 			'action': self.toggleAlmostStraightLines,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.almostStraightLines" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Laser Beams", 'de': u"Laserstrahlen", 'es': u"Rayos láser", 'fr': u"Rayons laser"}), 
+			'name': Glyphs.localize({
+				'en': u"Laser Beams",
+				'de': u"Laserstrahlen", 
+				'es': u"Rayos láser",
+				'fr': u"Rayons laser", 
+				'zh': u"摇臂过长查找", 
+			}), 
 			'action': self.toggleLaserBeams,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.laserBeams" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Duplicate Paths", 'de': u"Doppelte Pfade", 'es': u"Trazos duplicados", 'fr': u"Tracés superposés"}), 
+			'name': Glyphs.localize({
+				'en': u"Duplicate Paths",
+				'de': u"Doppelte Pfade",
+				'es': u"Trazos duplicados",
+				'fr': u"Tracés superposés", 
+				'zh': u"重叠路径查找", 
+			}), 
 			'action': self.toggleDuplicatePaths,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.duplicatePaths" ],
 		},
 		{
-			'name': Glyphs.localize({'en': u"Only Mark Handles if they are Almost Straight", 'de': u"Anfasser nur markieren, wenn sie beinahe gerade sind", 'es': u"Marcar manejadores sólo cuando están casi en línea recta", 'fr': u"Indiquer seulement les poignées presque orthogonales"}), 
+			'name': Glyphs.localize({
+				'en': u"Only Mark Handles if they are Almost Straight",
+				'de': u"Anfasser nur markieren, wenn sie beinahe gerade sind",
+				'es': u"Marcar manejadores sólo cuando están casi en línea recta",
+				'fr': u"Indiquer seulement les poignées presque orthogonales", 
+				'zh': u"仅显示近似垂直的摇臂", 
+			}), 
 			'action': self.toggleOnlyCloseHandles,
 			'state': Glyphs.defaults[ "com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles" ],
 		},

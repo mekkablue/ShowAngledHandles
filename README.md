@@ -2,7 +2,7 @@
 
 This is a plugin for the [Glyphs font editor](https://glyphsapp.com/) by Georg Seifert.
 It highlights BCPs (‘handles’) which are not horizontal or vertical, quite-but-not-completely-straight line segments, duplicate paths, crossed handles, and zero handles.
-After installation, it will add the menu item *View > Show Angled Handles* (Cmd-Y, German: *Ansicht > Schräge Anfasser anzeigen*).
+After installation, it will add the menu item *View > Show Angled Handles* (Cmd-Y, de: *Schräge Anfasser anzeigen,* es: *Mostrar manejadores inclinados,* fr: *Afficher les poignées inclinées,* zh: 显示辅助摇臂水平或垂直).
 
 ![Angled Handles are marked red.](ShowAngledHandles.png "Show Angled Handles Screenshot")
 
