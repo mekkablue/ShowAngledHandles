@@ -17,15 +17,15 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleVersion</key>
-	<string>31</string>
+	<string>32</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.11</string>
+	<string>2.2.12</string>
 	<key>UpdateFeedURL</key>
 	<string>https://raw.githubusercontent.com/mekkablue/ShowAngledHandles/master/ShowAngledHandles.glyphsReporter/Contents/Info.plist</string>
 	<key>productPageURL</key>
 	<string>https://github.com/mekkablue/ShowAngledHandles</string>
 	<key>productReleaseNotes</key>
-	<string>Added Chinese localisation (thx 张大可 and 杨翕丞).</string>
+	<string>Added Chinese localisation, thx 刘钊， 宋熙然， 杨翕丞， 张大可.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Rainer Erich Scheichelbauer, 2018</string>
 	<key>NSPrincipalClass</key>
