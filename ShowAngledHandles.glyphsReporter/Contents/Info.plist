@@ -17,15 +17,15 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleVersion</key>
-	<string>34</string>
+	<string>35</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.14</string>
+	<string>2.2.15</string>
 	<key>UpdateFeedURL</key>
 	<string>https://raw.githubusercontent.com/mekkablue/ShowAngledHandles/master/ShowAngledHandles.glyphsReporter/Contents/Info.plist</string>
 	<key>productPageURL</key>
 	<string>https://github.com/mekkablue/ShowAngledHandles</string>
 	<key>productReleaseNotes</key>
-	<string>Better drawing of near-straight lines, general improvements, hopefully faster.</string>
+	<string>Streamlined code, hopefully faster.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Rainer Erich Scheichelbauer, 2018</string>
 	<key>NSPrincipalClass</key>

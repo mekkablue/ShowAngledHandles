@@ -31,45 +31,26 @@ def subtractPoints( point1, point2 ):
 	"""Returns point2 - point1."""
 	return NSPoint( point2.x - point1.x, point2.y - point1.y )
 
-def intersectionWithNSPoints( pointA, pointB, pointC, pointD ):
+def intersect( pointA, pointB, pointC, pointD ):
 	"""
-	Returns an NSPoint of the intersection AB with CD.
-	Or False if there is no intersection
+	Returns an NSPoint of the intersection AB with CD,
+	or None if there is no intersection.
+	pointA, pointB: NSPoints representing the first line AB,
+	pointC, pointD: NSPoints representing the second line CD.
 	"""
-	x1, y1 = pointA.x, pointA.y
-	x2, y2 = pointB.x, pointB.y
-	x3, y3 = pointC.x, pointC.y
-	x4, y4 = pointD.x, pointD.y
-	
 	try:
-		slope12 = ( float(y2) - float(y1) ) / ( float(x2) - float(x1) )
+		x1, y1 = pointA
+		x2, y2 = pointB
+		x3, y3 = pointC
+		x4, y4 = pointD
+		xtop = (x4-x3)*(x2*y1-x1*y2)-(x2-x1)*(x4*y3-x3*y4)
+		ytop = (y1-y2)*(x4*y3-x3*y4)-(y3-y4)*(x2*y1-x1*y2)
+		divisor = (y4-y3)*(x2-x1)-(y2-y1)*(x4-x3)
+		x = xtop/divisor
+		y = ytop/divisor
+		return NSPoint( x, y )
 	except:
-		# division by zero if vertical
-		slope12 = None
-		
-	try:
-		slope34 = ( float(y4) - float(y3) ) / ( float(x4) - float(x3) )
-	except:
-		# division by zero if vertical
-		slope34 = None
-	
-	if slope12 == slope34:
-		# parallel, no intersection
 		return None
-	elif slope12 is None:
-		# first line is vertical
-		x = x1
-		y = slope34 * ( x - x3 ) + y3
-	elif slope34 is None:
-		# second line is vertical
-		x = x3
-		y = slope12 * ( x - x1 ) + y1
-	else:
-		# both lines have an angle
-		x = ( slope12 * x1 - y1 - slope34 * x3 + y3 ) / ( slope12 - slope34 )
-		y = slope12 * ( x - x1 ) + y1
-		
-	return NSPoint( x, y )
 
 class ShowAngledHandles(ReporterPlugin):
 
@@ -104,15 +85,10 @@ class ShowAngledHandles(ReporterPlugin):
 	
 	def foreground(self, layer):
 		if self.conditionsAreMetForDrawing():
-			zoomedHandleSize = self.zoomedHandleSize()
-			
+
 			# mark angled handles:
-			NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.1, 0.1, 0.6 ).set()
-			redCircles = NSBezierPath.alloc().init()
-			listOfAngledHandles = self.getListOfAngledHandles( layer )
-			for thisPoint in listOfAngledHandles:
-				self.drawHandleForNode( thisPoint )
-			
+			self.drawAngledHandles( layer )
+
 			# mark duplicate paths:
 			if Glyphs.defaults["com.mekkablue.ShowAngledHandles.duplicatePaths"]:
 				self.markDuplicatePaths( layer, self.getScale() )
@@ -131,18 +107,39 @@ class ShowAngledHandles(ReporterPlugin):
 			
 			# mark zero handles:
 			if Glyphs.defaults["com.mekkablue.ShowAngledHandles.zeroHandles"]:
-				NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.7, 0.1, 0.9, 0.7 ).set()
-				purpleCircles = NSBezierPath.alloc().init()
-				listOfZeroHandles = self.getListOfZeroHandles( layer )
-				for thisPoint in listOfZeroHandles:
-					purpleCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize*2 ) )
-				purpleCircles.fill()
+				self.markZeroHandles( layer, zoomedHandleSize*2 )
 	
 	def zoomedHandleSize(self):
 		handleSizes = (5, 8, 12) # possible user settings
 		handleSizeIndex = Glyphs.handleSize # user choice in Glyphs > Preferences > User Preferences > Handle Size
 		handleSize = handleSizes[handleSizeIndex]*self.getScale()**-0.9 # scaled diameter
 		return handleSize
+	
+	def drawAngledHandles(self, thisLayer):
+		"""
+		Marks all BCPs on thisLayer that are not straight.
+		"""
+		NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.1, 0.1, 0.6 ).set()
+		for thisPath in thisLayer.paths:
+			for thisNode in thisPath.nodes:
+				if thisNode.type == OFFCURVE: # BCP
+					# determine other node for angle measurement:
+					otherNode = None
+					if thisNode.prevNode.type != OFFCURVE:
+						otherNode = thisNode.prevNode
+					elif thisNode.nextNode.type != OFFCURVE:
+						otherNode = thisNode.nextNode
+					if otherNode:
+						if ( thisNode.x - otherNode.x ) * ( thisNode.y - otherNode.y ) != 0.0:
+							if not Glyphs.defaults["com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"]:
+								self.drawHandleForNode( thisNode )
+							else:
+								angle = angleBetweenPoints( thisNode, otherNode ) % 90.0
+								diffX = abs(thisNode.x - otherNode.x)
+								diffY = abs(thisNode.y - otherNode.y)
+								almostStraight = diffX <= 2.0 or diffY <= 2.0 or angle < 8.0 or angle > 82.0
+								if almostStraight:
+									self.drawHandleForNode( thisNode )
 	
 	def drawHandleForNode(self, node):
 		# calculate handle size:
@@ -153,97 +150,58 @@ class ShowAngledHandles(ReporterPlugin):
 			handleSize *= 0.8
 	
 		# selected handles are a little bigger:
-		if node.selected: # workaround for node.selected (currently broken)
+		if node.selected:
 			handleSize *= 1.45
 	
 		# draw disc inside a rectangle around point position:
-		position = node.position
-		rect = NSRect()
-		rect.origin = NSPoint(position.x-handleSize/2, position.y-handleSize/2)
-		rect.size = NSSize(handleSize, handleSize)
-		NSBezierPath.bezierPathWithOvalInRect_(rect).fill()
+		dot = self.roundDotForPoint(node.position, handleSize)
+		dot.fill()
 	
 	def roundDotForPoint( self, thisPoint, markerWidth ):
 		"""
 		Returns a circle with thisRadius around thisPoint.
 		"""
-		myRect = NSRect( ( thisPoint.x - markerWidth * 0.5, thisPoint.y - markerWidth * 0.5 ), ( markerWidth, markerWidth ) )
+		myRect = NSRect( 
+			( thisPoint.x-markerWidth*0.5, thisPoint.y-markerWidth*0.5 ), # origin
+			( markerWidth, markerWidth ), # size
+		)
 		return NSBezierPath.bezierPathWithOvalInRect_(myRect)
 		
-	def drawCrossForPoint( self, thisPoint, firstOnCurve, secondOnCurve, zoomFactor ):
+	def drawCrossForPoint( self, thisPoint, firstOnCurve, secondOnCurve, zoomFactor, smoothHandle=False ):
 		"""
 		Returns a circle with thisRadius around thisPoint.
 		"""
-		offset = 10.0
-		leftX  = thisPoint.x - offset / zoomFactor
-		rightX = thisPoint.x + offset / zoomFactor
-		lowerY = thisPoint.y - offset / zoomFactor
-		upperY = thisPoint.y + offset / zoomFactor
-		
-		# check for original linewidth:
-		oldLineWidth = NSBezierPath.defaultLineWidth()
-		NSBezierPath.setDefaultLineWidth_( 1.0 / zoomFactor )
-		
 		# arms:
-		NSColor.yellowColor().set()
-		NSBezierPath.strokeLineFromPoint_toPoint_( thisPoint, firstOnCurve )
-		NSBezierPath.strokeLineFromPoint_toPoint_( thisPoint, secondOnCurve )
+		arms = NSBezierPath.bezierPath()
+		arms.moveTo_(thisPoint)
+		arms.lineTo_(firstOnCurve)
+		arms.moveTo_(thisPoint)
+		arms.lineTo_(secondOnCurve)
+		arms.setLineCapStyle_( NSRoundLineCapStyle )
+		arms.setLineWidth_( 1.0 / zoomFactor )
+		if smoothHandle:
+			arms.setLineDash_count_phase_( (2.0/zoomFactor, 3.0/zoomFactor), 2, 0 )
+			NSColor.grayColor().set()
+		else:
+			NSColor.yellowColor().set()
+		arms.stroke()
 		
 		# cross:
-		NSColor.orangeColor().set()
-		NSBezierPath.strokeLineFromPoint_toPoint_( NSPoint(leftX,upperY), NSPoint(rightX,lowerY) )
-		NSBezierPath.strokeLineFromPoint_toPoint_( NSPoint(leftX,lowerY), NSPoint(rightX,upperY) )
-		
-		# restore original linewidth:
-		NSBezierPath.setDefaultLineWidth_( oldLineWidth )
-
-	def getListOfHandleCrossings( self, thisLayer ):
-		"""
-		Returns a list of NSPoints where handles cross.
-		"""
-		returnList = []
-		
-		for thisPath in thisLayer.paths:
-			theseNodes = thisPath.nodes
-			pathLength = len( theseNodes )
-			for thisNodeIndex in range(pathLength):
-				if theseNodes[thisNodeIndex].type == GSCURVE: #GSCURVE
-					pointA = theseNodes[  thisNodeIndex    % pathLength ].position
-					pointB = theseNodes[ (thisNodeIndex-1) % pathLength ].position
-					pointC = theseNodes[ (thisNodeIndex-2) % pathLength ].position
-					pointD = theseNodes[ (thisNodeIndex-3) % pathLength ].position
-					nsRectAB = NSRect( pointA, subtractPoints( pointA, pointB ) )
-					nsRectCD = NSRect( pointD, subtractPoints( pointD, pointC ) )
-					rectAB = NSBezierPath.bezierPathWithRect_( nsRectAB )
-					rectCD = NSBezierPath.bezierPathWithRect_( nsRectCD )
-					intersection = intersectionWithNSPoints( pointA, pointB, pointC, pointD )
-					if intersection:
-						if rectAB.containsPoint_(intersection) or rectCD.containsPoint_(intersection):
-							returnList.append( (intersection, pointA, pointD), )
-		return returnList
-			
-	def getListOfAngledHandles( self, thisLayer ):
-		"""
-		Returns a list of all BCPs on thisLayer that are not straight.
-		"""
-		returnList = []
-	
-		for thisPath in thisLayer.paths:
-			for i in range( len( thisPath.nodes )):
-				thisNode = thisPath.nodes[ i ]
-			
-				if thisNode.type == OFFCURVE: # BCP
-					prevNode = thisPath.nodes[ i-1 ]
-					nextNode = thisPath.nodes[ i+1 ]
-				
-					if prevNode and prevNode.type != OFFCURVE:
-						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
-							returnList.append( thisNode )
-					elif nextNode and nextNode.type != OFFCURVE:
-						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
-							returnList.append( thisNode )
-						
-		return returnList
+		if not smoothHandle:
+			NSColor.orangeColor().set()
+			offset = 10.0
+			leftX  = thisPoint.x - offset / zoomFactor
+			rightX = thisPoint.x + offset / zoomFactor
+			lowerY = thisPoint.y - offset / zoomFactor
+			upperY = thisPoint.y + offset / zoomFactor
+			cross = NSBezierPath.bezierPath()
+			cross.moveTo_( NSPoint(leftX,upperY) )
+			cross.lineTo_( NSPoint(rightX,lowerY) )
+			cross.moveTo_( NSPoint(leftX,lowerY) )
+			cross.lineTo_( NSPoint(rightX,upperY) )
+			cross.setLineCapStyle_( NSRoundLineCapStyle )
+			cross.setLineWidth_( 1.0 / zoomFactor )
+			cross.stroke()
 
 	def getIndexListOfDuplicatePaths( self, thisLayer ):
 		"""
@@ -278,18 +236,18 @@ class ShowAngledHandles(ReporterPlugin):
 							if not opacity <= 1.0:
 								opacity = 1.0 
 							NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.5, 0.0, opacity ).set()
-							myOnscreenLine = NSBezierPath.bezierPath()
-							myOnscreenLine.moveTo_(prevNode.position)
-							myOnscreenLine.lineTo_(thisNode.position)
-							myOnscreenLine.setLineCapStyle_( NSRoundLineCapStyle )
-							myOnscreenLine.setLineWidth_( scaledLineWidth )
-							myOnscreenLine.stroke()
+							lineMarker = NSBezierPath.bezierPath()
+							lineMarker.moveTo_(prevNode.position)
+							lineMarker.lineTo_(thisNode.position)
+							lineMarker.setLineCapStyle_( NSRoundLineCapStyle )
+							lineMarker.setLineWidth_( scaledLineWidth )
+							lineMarker.stroke()
 	
 	def markDuplicatePaths( self, thisLayer, zoomFactor ):
 		"""Marks Duplicate Paths"""
 		listOfIndexes = self.getIndexListOfDuplicatePaths( thisLayer )
 		if listOfIndexes:
-			duplicateMarker = NSBezierPath.alloc().init()
+			duplicateMarker = NSBezierPath.bezierPath()
 			
 			for thisIndex in listOfIndexes:
 				duplicatePathBezier = thisLayer.paths[thisIndex].bezierPath
@@ -309,63 +267,43 @@ class ShowAngledHandles(ReporterPlugin):
 			
 	def markCrossedHandles( self, thisLayer, zoomFactor ):
 		"""Marks crossed handles"""
-		for theseThreePoints in self.getListOfHandleCrossings( thisLayer ):
-			intersectionPoint = theseThreePoints[0]
-			firstOnCurve = theseThreePoints[1]
-			secondOnCurve = theseThreePoints[2]
-			self.drawCrossForPoint( intersectionPoint, firstOnCurve, secondOnCurve, zoomFactor )
-	
-	def getListOfZeroHandles(self, thisLayer):
-		"""Returns a list of all BCPs that are retracted into the nearest oncurve point."""
-		returnList = []
 		for thisPath in thisLayer.paths:
-			for i in range(len(thisPath.nodes)):
-				thisNode = thisPath.nodes[i]
+			for thisNode in thisPath.nodes:
+				if thisNode.type == GSCURVE: #GSCURVE
+					pointA = thisNode.position
+					pointB = thisNode.prevNode.position
+					pointC = thisNode.prevNode.prevNode.position
+					pointD = thisNode.prevNode.prevNode.prevNode.position
+					handleRectAB = NSBezierPath.bezierPathWithRect_( NSRect( pointA, subtractPoints(pointA, pointB) ) )
+					handleRectCD = NSBezierPath.bezierPathWithRect_( NSRect( pointD, subtractPoints(pointD, pointC) ) )
+					intersection = intersect( pointA, pointB, pointC, pointD )
+					if intersection:
+						if handleRectAB.containsPoint_(intersection) or handleRectCD.containsPoint_(intersection):
+							smooth = intersection == pointB or intersection == pointC
+							self.drawCrossForPoint( intersection, pointA, pointD, zoomFactor, smooth )
+	
+	def markZeroHandles(self, thisLayer, handleSize):
+		"""
+		Marks all BCPs that are retracted into the nearest oncurve point.
+		"""
+		NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.7, 0.1, 0.9, 0.7 ).set()
+		purpleCircles = NSBezierPath.bezierPath()
+		
+		for thisPath in thisLayer.paths:
+			for thisNode in thisPath.nodes:
 				if thisNode.type == OFFCURVE:
-					prevNode = thisPath.nodes[ i-1 ]
-					nextNode = thisPath.nodes[ i+1 ]
-					if prevNode.type != OFFCURVE:
-						if prevNode.position == thisNode.position:
-							returnList.append( thisNode )
-					elif nextNode.type != OFFCURVE:
-						if nextNode.position == thisNode.position:
-							returnList.append( thisNode )
-		return returnList
+					retractedInPrevNode = thisNode.prevNode.type != OFFCURVE and thisNode.prevNode.position == thisNode.position
+					retractedInNextNode = thisNode.nextNode.type != OFFCURVE and thisNode.nextNode.position == thisNode.position
+					if retractedInNextNode or retractedInPrevNode:
+						handleDot = self.roundDotForPoint( thisNode.position, handleSize )
+						purpleCircles.appendBezierPath_( handleDot )
 	
-	def getListOfAngledHandles( self, thisLayer ):
-		"""
-		Returns a list of all BCPs on thisLayer that are not straight.
-		"""
-		returnList = []
-		for thisPath in thisLayer.paths:
-			for i in range( len( thisPath.nodes )):
-				thisNode = thisPath.nodes[ i ]
-				if thisNode.type == OFFCURVE: # BCP
-					prevNode = thisPath.nodes[ i-1 ]
-					nextNode = thisPath.nodes[ i+1 ]
-					if prevNode.type != OFFCURVE:
-						if ( thisNode.x - prevNode.x ) * ( thisNode.y - prevNode.y ) != 0.0:
-							if not Glyphs.defaults["com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"]:
-								returnList.append( thisNode )
-							else:
-								angle = angleBetweenPoints( thisNode, prevNode ) % 90.0
-								diffX = abs(thisNode.x - prevNode.x)
-								diffY = abs(thisNode.y - prevNode.y)
-								if diffX <= 2.0 or diffY <= 2.0 or angle < 8.0 or angle > 82.0:
-									returnList.append( thisNode )
-					elif nextNode.type != OFFCURVE:
-						if ( thisNode.x - nextNode.x ) * ( thisNode.y - nextNode.y ) != 0.0:
-							if not Glyphs.defaults["com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"]:
-								returnList.append( thisNode )
-							else:
-								angle = angleBetweenPoints( thisNode, nextNode ) % 90.0
-								diffX = abs(thisNode.x - nextNode.x)
-								diffY = abs(thisNode.y - nextNode.y)
-								if diffX <= 2.0 or diffY <= 2.0 or angle < 8.0 or angle > 82.0:
-									returnList.append( thisNode )
-		return returnList
+		purpleCircles.fill()
 	
 	def conditionalContextMenus(self):
+		"""
+		Builds contextual menus for plug-in options.
+		"""
 		return [
 		{
 			'name': Glyphs.localize({
