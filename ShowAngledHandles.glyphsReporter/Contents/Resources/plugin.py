@@ -91,7 +91,7 @@ class ShowAngledHandles(ReporterPlugin):
 
 			# mark duplicate paths:
 			if Glyphs.defaults["com.mekkablue.ShowAngledHandles.duplicatePaths"]:
-				self.markDuplicatePaths( layer, self.getScale() )
+				self.markDuplicateSegments( layer, self.getScale() )
 	
 	def background(self, layer):
 		if self.conditionsAreMetForDrawing():
@@ -243,6 +243,45 @@ class ShowAngledHandles(ReporterPlugin):
 							lineMarker.setLineWidth_( scaledLineWidth )
 							lineMarker.stroke()
 	
+	def markDuplicateSegments(self, thisLayer, zoomFactor):
+		segments = []
+		for p in thisLayer.paths:
+			for s in p.segments:
+				segments.append(s)
+
+		duplicates = []
+		for i, s1 in enumerate(segments):
+			for j, s2 in enumerate(segments[i+1:]):
+				if s1 not in duplicates and s1 in (s2, s2[::-1]):
+					duplicates.append(s1)
+		
+		if duplicates:
+			duplicateMarker = NSBezierPath.bezierPath()
+			for segment in duplicates:
+				duplicateMarker.moveToPoint_(
+					segment[0].pointValue(),
+				)
+				if len(segment) == 2:
+					duplicateMarker.lineToPoint_(
+						segment[1].pointValue(),
+					)
+				else:
+					duplicateMarker.curveToPoint_controlPoint1_controlPoint2_(
+						segment[1].pointValue(),
+						segment[2].pointValue(),
+						segment[3].pointValue(),
+					)
+			NSColor.purpleColor().set()
+			duplicateMarker.setLineWidth_( 3.0/zoomFactor )
+			#duplicateMarker.setLineDash_count_phase_( [7.0/zoomFactor, 3.0/zoomFactor], 2, 3.5/zoomFactor )
+			duplicateMarker.stroke()
+			
+			NSColor.yellowColor().set()
+			duplicateMarker.setLineWidth_( 2.0/zoomFactor )
+			duplicateMarker.setLineDash_count_phase_( [4.0/zoomFactor, 6.0/zoomFactor], 2, 2.0/zoomFactor )
+			duplicateMarker.stroke()
+			
+	
 	def markDuplicatePaths( self, thisLayer, zoomFactor ):
 		"""Marks Duplicate Paths"""
 		listOfIndexes = self.getIndexListOfDuplicatePaths( thisLayer )
@@ -355,10 +394,10 @@ class ShowAngledHandles(ReporterPlugin):
 		},
 		{
 			'name': Glyphs.localize({
-				'en': u"Duplicate Paths",
-				'de': u"Doppelte Pfade",
-				'es': u"Trazos duplicados",
-				'fr': u"Tracés superposés", 
+				'en': u"Duplicate Path Segments",
+				'de': u"Doppelte Pfadsegmente",
+				'es': u"Segmentos de trazos duplicados",
+				'fr': u"Segments de tracés superposés", 
 				'zh': u"👯‍♂️路径重叠警告", 
 			}), 
 			'action': self.toggleDuplicatePaths,
