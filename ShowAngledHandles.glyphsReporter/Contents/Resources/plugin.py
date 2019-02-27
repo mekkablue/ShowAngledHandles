@@ -267,9 +267,9 @@ class ShowAngledHandles(ReporterPlugin):
 					)
 				else:
 					duplicateMarker.curveToPoint_controlPoint1_controlPoint2_(
+						segment[3].pointValue(),
 						segment[1].pointValue(),
 						segment[2].pointValue(),
-						segment[3].pointValue(),
 					)
 			NSColor.purpleColor().set()
 			duplicateMarker.setLineWidth_( 3.0/zoomFactor )
