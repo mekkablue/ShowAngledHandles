@@ -397,7 +397,7 @@ class ShowAngledHandles(ReporterPlugin):
 				'en': u"Duplicate Path Segments",
 				'de': u"Doppelte Pfadsegmente",
 				'es': u"Segmentos de trazos duplicados",
-				'fr': u"Segments de tracés superposés", 
+				'fr': u"Segments de tracés en double", 
 				'zh': u"👯‍♂️路径重叠警告", 
 			}), 
 			'action': self.toggleDuplicatePaths,
