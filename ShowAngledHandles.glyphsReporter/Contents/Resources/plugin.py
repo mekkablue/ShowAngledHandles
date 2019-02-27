@@ -15,7 +15,7 @@
 import math
 from GlyphsApp import OFFCURVE, GSCURVE, GSPath
 from GlyphsApp.plugins import *
-from AppKit import NSRoundLineCapStyle, NSButtLineCapStyle
+from AppKit import NSLineCapStyleRound
 
 def angleBetweenPoints( firstPoint, secondPoint ):
 	"""
@@ -293,7 +293,7 @@ class ShowAngledHandles(ReporterPlugin):
 				duplicatePathBezier = thisLayer.paths[thisIndex].bezierPath
 				duplicateMarker.appendBezierPath_( duplicatePathBezier )
 			
-			duplicateMarker.setLineCapStyle_( NSRoundLineCapStyle )
+			duplicateMarker.setLineCapStyle_( NSLineCapStyleRound )
 			
 			NSColor.purpleColor().set()
 			duplicateMarker.setLineWidth_( 3.0/zoomFactor )
