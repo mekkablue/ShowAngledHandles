@@ -278,8 +278,13 @@ class ShowAngledHandles(ReporterPlugin):
 					handleRectCD = NSBezierPath.bezierPathWithRect_( NSRect( pointD, subtractPoints(pointD, pointC) ) )
 					intersection = intersect( pointA, pointB, pointC, pointD )
 					if intersection:
-						if handleRectAB.containsPoint_(intersection) or handleRectCD.containsPoint_(intersection):
-							smooth = intersection == pointB or intersection == pointC
+						intersectionInAB = handleRectAB.containsPoint_(intersection)
+						intersectionInCD = handleRectCD.containsPoint_(intersection)
+						if intersectionInAB:
+							smooth = intersection == pointB
+							self.drawCrossForPoint( intersection, pointA, pointD, zoomFactor, smooth )
+						elif intersectionInCD:
+							smooth = intersection == pointC
 							self.drawCrossForPoint( intersection, pointA, pointD, zoomFactor, smooth )
 	
 	def markZeroHandles(self, thisLayer, handleSize):
