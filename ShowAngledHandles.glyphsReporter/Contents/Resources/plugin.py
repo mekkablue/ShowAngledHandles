@@ -123,7 +123,7 @@ class ShowAngledHandles(ReporterPlugin):
 				
 				# mark slanted lines:
 				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.almostStraightLines"]:
-					self.markNonStraightLines( layer, zoomedHandleSize )
+					self.markNonStraightLines( layer, zoomedHandleSize**0.9 )
 				
 				# mark crossed BCPs:
 				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.laserBeams"]:
@@ -215,7 +215,7 @@ class ShowAngledHandles(ReporterPlugin):
 					intersection = intersectionWithNSPoints( pointA, pointB, pointC, pointD )
 					if intersection:
 						if rectAB.containsPoint_(intersection) or rectCD.containsPoint_(intersection):
-							returnList.append( [intersection, pointA, pointD] )
+							returnList.append( (intersection, pointA, pointD), )
 		return returnList
 			
 	def getListOfAngledHandles( self, thisLayer ):
@@ -279,7 +279,7 @@ class ShowAngledHandles(ReporterPlugin):
 							myLine.addNode_( thisNode.copy() )
 							myLine.closed = False
 							myOnscreenLine = myLine.bezierPath
-							myOnscreenLine.setLineCapStyle_( NSButtLineCapStyle )
+							myOnscreenLine.setLineCapStyle_( NSLineCapStyleRound )
 							myOnscreenLine.setLineWidth_( scaledLineWidth )
 							myOnscreenLine.stroke()
 	
