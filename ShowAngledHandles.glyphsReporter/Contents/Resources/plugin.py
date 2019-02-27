@@ -91,59 +91,63 @@ class ShowAngledHandles(ReporterPlugin):
 		
 		self.keyboardShortcut = Glyphs.defaults["com.mekkablue.ShowAngledHandles.keyboardShortcut"]
 		self.keyboardShortcutModifier = NSCommandKeyMask
-		
-	def foreground(self, layer):
+	
+	def conditionsAreMetForDrawing(self):
 		currentController = self.controller.view().window().windowController()
 		if currentController:
 			tool = currentController.toolDrawDelegate()
-			if not tool.isKindOfClass_( NSClassFromString("GlyphsToolText") ) and not tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") ): # don't activate if on cursor tool, or pan tool
-				HandleSize = self.getHandleSize()
-				Scale = self.getScale()
-				zoomedHandleSize = HandleSize / Scale
-				
-				# mark angled handles:
-				NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.1, 0.1, 0.6 ).set()
-				redCircles = NSBezierPath.alloc().init()
-				listOfAngledHandles = self.getListOfAngledHandles( layer )
-				for thisPoint in listOfAngledHandles:
-					self.drawHandleForNode( thisPoint )
-				
-				# mark duplicate paths:
-				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.duplicatePaths"]:
-					self.markDuplicatePaths( layer, Scale )
+			textToolIsActive = tool.isKindOfClass_( NSClassFromString("GlyphsToolText") )
+			handToolIsActive = tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") )
+			if not textToolIsActive and not handToolIsActive: # don't activate if on cursor or pan tool
+				return True
+		return False
+	
+	def foreground(self, layer):
+		if self.conditionsAreMetForDrawing():
+			zoomedHandleSize = self.zoomedHandleSize()
+			
+			# mark angled handles:
+			NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.1, 0.1, 0.6 ).set()
+			redCircles = NSBezierPath.alloc().init()
+			listOfAngledHandles = self.getListOfAngledHandles( layer )
+			for thisPoint in listOfAngledHandles:
+				self.drawHandleForNode( thisPoint )
+			
+			# mark duplicate paths:
+			if Glyphs.defaults["com.mekkablue.ShowAngledHandles.duplicatePaths"]:
+				self.markDuplicatePaths( layer, self.getScale() )
 	
 	def background(self, layer):
-		currentController = self.controller.view().window().windowController()
-		if currentController:
-			tool = currentController.toolDrawDelegate()
-			if not tool.isKindOfClass_( NSClassFromString("GlyphsToolText") ) and not tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") ): # don't activate if on cursor tool, or pan tool
-				HandleSize = self.getHandleSize()
-				scale = self.getScale()
-				zoomedHandleSize = HandleSize / scale
-				
-				# mark slanted lines:
-				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.almostStraightLines"]:
-					self.markNonStraightLines( layer, zoomedHandleSize**0.9 )
-				
-				# mark crossed BCPs:
-				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.laserBeams"]:
-					self.markCrossedHandles( layer, scale )
-				
-				# mark zero handles:
-				if Glyphs.defaults["com.mekkablue.ShowAngledHandles.zeroHandles"]:
-					NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.7, 0.1, 0.9, 0.7 ).set()
-					purpleCircles = NSBezierPath.alloc().init()
-					listOfZeroHandles = self.getListOfZeroHandles( layer )
-					for thisPoint in listOfZeroHandles:
-						purpleCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize*2 ) )
-					purpleCircles.fill()
+		if self.conditionsAreMetForDrawing():
+			zoomedHandleSize = self.zoomedHandleSize()
+			
+			# mark slanted lines:
+			if Glyphs.defaults["com.mekkablue.ShowAngledHandles.almostStraightLines"]:
+				self.markNonStraightLines( layer, zoomedHandleSize*0.7 )
+			
+			# mark crossed BCPs:
+			if Glyphs.defaults["com.mekkablue.ShowAngledHandles.laserBeams"]:
+				self.markCrossedHandles( layer, self.getScale() )
+			
+			# mark zero handles:
+			if Glyphs.defaults["com.mekkablue.ShowAngledHandles.zeroHandles"]:
+				NSColor.colorWithCalibratedRed_green_blue_alpha_( 0.7, 0.1, 0.9, 0.7 ).set()
+				purpleCircles = NSBezierPath.alloc().init()
+				listOfZeroHandles = self.getListOfZeroHandles( layer )
+				for thisPoint in listOfZeroHandles:
+					purpleCircles.appendBezierPath_( self.roundDotForPoint( thisPoint, zoomedHandleSize*2 ) )
+				purpleCircles.fill()
 	
-	def drawHandleForNode(self, node):
-		# calculate handle size:
+	def zoomedHandleSize(self):
 		handleSizes = (5, 8, 12) # possible user settings
 		handleSizeIndex = Glyphs.handleSize # user choice in Glyphs > Preferences > User Preferences > Handle Size
 		handleSize = handleSizes[handleSizeIndex]*self.getScale()**-0.9 # scaled diameter
+		return handleSize
 	
+	def drawHandleForNode(self, node):
+		# calculate handle size:
+		handleSize = self.zoomedHandleSize()
+		
 		# offcurves are a little smaller:
 		if node.type == OFFCURVE:
 			handleSize *= 0.8
@@ -274,11 +278,9 @@ class ShowAngledHandles(ReporterPlugin):
 							if not opacity <= 1.0:
 								opacity = 1.0 
 							NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.5, 0.0, opacity ).set()
-							myLine = GSPath()
-							myLine.addNode_( prevNode.copy() )
-							myLine.addNode_( thisNode.copy() )
-							myLine.closed = False
-							myOnscreenLine = myLine.bezierPath
+							myOnscreenLine = NSBezierPath.bezierPath()
+							myOnscreenLine.moveTo_(prevNode.position)
+							myOnscreenLine.lineTo_(thisNode.position)
 							myOnscreenLine.setLineCapStyle_( NSRoundLineCapStyle )
 							myOnscreenLine.setLineWidth_( scaledLineWidth )
 							myOnscreenLine.stroke()
