@@ -28,7 +28,9 @@ def angleBetweenPoints( firstPoint, secondPoint ):
 	return math.degrees(math.atan2(yDiff,xDiff))
 
 def subtractPoints( point1, point2 ):
-	"""Returns point2 - point1."""
+	"""
+	Returns point2 - point1.
+	"""
 	return NSPoint( point2.x - point1.x, point2.y - point1.y )
 
 def intersect( pointA, pointB, pointC, pointD ):
@@ -74,22 +76,25 @@ class ShowAngledHandles(ReporterPlugin):
 		self.keyboardShortcutModifier = NSCommandKeyMask
 	
 	def conditionsAreMetForDrawing(self):
+		"""
+		Don't activate if text or pan (hand) tool are active.
+		"""
 		currentController = self.controller.view().window().windowController()
 		if currentController:
 			tool = currentController.toolDrawDelegate()
 			textToolIsActive = tool.isKindOfClass_( NSClassFromString("GlyphsToolText") )
 			handToolIsActive = tool.isKindOfClass_( NSClassFromString("GlyphsToolHand") )
-			if not textToolIsActive and not handToolIsActive: # don't activate if on cursor or pan tool
+			if not textToolIsActive and not handToolIsActive: 
 				return True
 		return False
 	
 	def foreground(self, layer):
 		if self.conditionsAreMetForDrawing():
-
+			
 			# mark angled handles:
 			self.drawAngledHandles( layer )
-
-			# mark duplicate paths:
+			
+			# mark duplicate path segments:
 			if Glyphs.defaults["com.mekkablue.ShowAngledHandles.duplicatePaths"]:
 				self.markDuplicateSegments( layer, self.getScale() )
 	
@@ -110,8 +115,12 @@ class ShowAngledHandles(ReporterPlugin):
 				self.markZeroHandles( layer, zoomedHandleSize*2 )
 	
 	def zoomedHandleSize(self):
-		handleSizes = (5, 8, 12) # possible user settings
-		handleSizeIndex = Glyphs.handleSize # user choice in Glyphs > Preferences > User Preferences > Handle Size
+		"""
+		Returns the proper handle size according to user settings:
+		Glyphs > Preferences > User Preferences > Handle Size
+		"""
+		handleSizes = (5, 8, 12)
+		handleSizeIndex = Glyphs.handleSize 
 		handleSize = handleSizes[handleSizeIndex]*self.getScale()**-0.9 # scaled diameter
 		return handleSize
 	
@@ -142,6 +151,9 @@ class ShowAngledHandles(ReporterPlugin):
 									self.drawHandleForNode( thisNode )
 	
 	def drawHandleForNode(self, node):
+		"""
+		Draws a BCP dot in the correct size.
+		"""
 		# calculate handle size:
 		handleSize = self.zoomedHandleSize()
 		
@@ -169,16 +181,17 @@ class ShowAngledHandles(ReporterPlugin):
 		
 	def drawCrossForPoint( self, thisPoint, firstOnCurve, secondOnCurve, zoomFactor, smoothHandle=False ):
 		"""
-		Returns a circle with thisRadius around thisPoint.
+		Draws a laser beam and an intersection cross for handles that are too long, 
+		or a dotted indicator line for max handles.
 		"""
-		# arms:
+		# arms (beams):
 		arms = NSBezierPath.bezierPath()
 		arms.moveTo_(thisPoint)
 		arms.lineTo_(firstOnCurve)
 		arms.moveTo_(thisPoint)
 		arms.lineTo_(secondOnCurve)
-		arms.setLineCapStyle_( NSRoundLineCapStyle )
-		arms.setLineWidth_( 1.0 / zoomFactor )
+		arms.setLineCapStyle_(NSRoundLineCapStyle)
+		arms.setLineWidth_(1.0/zoomFactor)
 		if smoothHandle:
 			arms.setLineDash_count_phase_( (2.0/zoomFactor, 3.0/zoomFactor), 2, 0 )
 			NSColor.grayColor().set()
@@ -186,7 +199,7 @@ class ShowAngledHandles(ReporterPlugin):
 			NSColor.yellowColor().set()
 		arms.stroke()
 		
-		# cross:
+		# cross (intersection):
 		if not smoothHandle:
 			NSColor.orangeColor().set()
 			offset = 10.0
@@ -195,37 +208,23 @@ class ShowAngledHandles(ReporterPlugin):
 			lowerY = thisPoint.y - offset / zoomFactor
 			upperY = thisPoint.y + offset / zoomFactor
 			cross = NSBezierPath.bezierPath()
-			cross.moveTo_( NSPoint(leftX,upperY) )
-			cross.lineTo_( NSPoint(rightX,lowerY) )
-			cross.moveTo_( NSPoint(leftX,lowerY) )
-			cross.lineTo_( NSPoint(rightX,upperY) )
-			cross.setLineCapStyle_( NSRoundLineCapStyle )
-			cross.setLineWidth_( 1.0 / zoomFactor )
+			cross.moveTo_(NSPoint(leftX,upperY))
+			cross.lineTo_(NSPoint(rightX,lowerY))
+			cross.moveTo_(NSPoint(leftX,lowerY))
+			cross.lineTo_(NSPoint(rightX,upperY))
+			cross.setLineCapStyle_(NSRoundLineCapStyle)
+			cross.setLineWidth_(1.0/zoomFactor)
 			cross.stroke()
 
-	def getIndexListOfDuplicatePaths( self, thisLayer ):
-		"""
-		Returns a list of GSPaths that are exact duplicates of another.
-		"""
-		indexesOfDuplicates = []
-		numberOfPaths = len(thisLayer.paths)
-		for thisPathNumber in range( numberOfPaths ):
-			if thisPathNumber < (numberOfPaths - 1):
-				thisPath = thisLayer.paths[thisPathNumber]
-				thisPathDict = str(thisPath.pathDict()).replace(" SMOOTH", "")
-				for thatPathNumber in range( thisPathNumber + 1, numberOfPaths ):
-					thatPath = thisLayer.paths[thatPathNumber]
-					if thisPathDict == str(thatPath.pathDict()).replace(" SMOOTH", ""):
-						indexesOfDuplicates.append( thatPathNumber )
-		return indexesOfDuplicates
-			
 	def markNonStraightLines( self, thisLayer, scaledLineWidth ):
-		"""Draws NSBezierPaths for nonstraight lines."""
+		"""
+		Draws an indicator for nonstraight lines.
+		Opacity depends on deviation from straight (h/v) position.
+		"""
 		for thisPath in thisLayer.paths:
-			for i in range( len( thisPath.nodes )):
-				thisNode = thisPath.nodes[ i ]
+			for thisNode in thisPath.nodes:
 				if thisNode.type != OFFCURVE: # on-curve
-					prevNode = thisPath.nodes[ i-1 ]
+					prevNode = thisNode.prevNode
 					if prevNode and prevNode.type != OFFCURVE:
 						unstraightness = abs( thisNode.x - prevNode.x )
 						unstraightnessY = abs( thisNode.y - prevNode.y )
@@ -237,13 +236,16 @@ class ShowAngledHandles(ReporterPlugin):
 								opacity = 1.0 
 							NSColor.colorWithCalibratedRed_green_blue_alpha_( 1.0, 0.5, 0.0, opacity ).set()
 							lineMarker = NSBezierPath.bezierPath()
-							lineMarker.moveTo_(prevNode.position)
-							lineMarker.lineTo_(thisNode.position)
+							lineMarker.moveTo_( prevNode.position )
+							lineMarker.lineTo_( thisNode.position )
 							lineMarker.setLineCapStyle_( NSRoundLineCapStyle )
 							lineMarker.setLineWidth_( scaledLineWidth )
 							lineMarker.stroke()
 	
 	def markDuplicateSegments(self, thisLayer, zoomFactor):
+		"""
+		Collect identical segments and mark them.
+		"""
 		segments = []
 		for p in thisLayer.paths:
 			for s in p.segments:
@@ -273,49 +275,27 @@ class ShowAngledHandles(ReporterPlugin):
 					)
 			NSColor.purpleColor().set()
 			duplicateMarker.setLineWidth_( 3.0/zoomFactor )
-			#duplicateMarker.setLineDash_count_phase_( [7.0/zoomFactor, 3.0/zoomFactor], 2, 3.5/zoomFactor )
 			duplicateMarker.stroke()
 			
 			NSColor.yellowColor().set()
 			duplicateMarker.setLineWidth_( 2.0/zoomFactor )
 			duplicateMarker.setLineDash_count_phase_( [4.0/zoomFactor, 6.0/zoomFactor], 2, 2.0/zoomFactor )
 			duplicateMarker.stroke()
-			
-	
-	def markDuplicatePaths( self, thisLayer, zoomFactor ):
-		"""Marks Duplicate Paths"""
-		listOfIndexes = self.getIndexListOfDuplicatePaths( thisLayer )
-		if listOfIndexes:
-			duplicateMarker = NSBezierPath.bezierPath()
-			
-			for thisIndex in listOfIndexes:
-				duplicatePathBezier = thisLayer.paths[thisIndex].bezierPath
-				duplicateMarker.appendBezierPath_( duplicatePathBezier )
-			
-			duplicateMarker.setLineCapStyle_( NSRoundLineCapStyle )
-			
-			NSColor.purpleColor().set()
-			duplicateMarker.setLineWidth_( 3.0/zoomFactor )
-			duplicateMarker.setLineDash_count_phase_( [7.0/zoomFactor, 3.0/zoomFactor], 2, 3.5/zoomFactor )
-			duplicateMarker.stroke()
-			
-			NSColor.yellowColor().set()
-			duplicateMarker.setLineWidth_( 2.0/zoomFactor )
-			duplicateMarker.setLineDash_count_phase_( [4.0/zoomFactor, 6.0/zoomFactor], 2, 2.0/zoomFactor )
-			duplicateMarker.stroke()
-			
+
 	def markCrossedHandles( self, thisLayer, zoomFactor ):
-		"""Marks crossed handles"""
+		"""
+		Marks crossed handles.
+		"""
 		for thisPath in thisLayer.paths:
 			for thisNode in thisPath.nodes:
-				if thisNode.type == GSCURVE: #GSCURVE
+				if thisNode.type == GSCURVE:
 					pointA = thisNode.position
 					pointB = thisNode.prevNode.position
 					pointC = thisNode.prevNode.prevNode.position
 					pointD = thisNode.prevNode.prevNode.prevNode.position
 					handleRectAB = NSBezierPath.bezierPathWithRect_( NSRect( pointA, subtractPoints(pointA, pointB) ) )
 					handleRectCD = NSBezierPath.bezierPathWithRect_( NSRect( pointD, subtractPoints(pointD, pointC) ) )
-					intersection = intersect( pointA, pointB, pointC, pointD )
+					intersection = intersect(pointA, pointB, pointC, pointD)
 					if intersection:
 						intersectionInAB = handleRectAB.containsPoint_(intersection)
 						intersectionInCD = handleRectCD.containsPoint_(intersection)
