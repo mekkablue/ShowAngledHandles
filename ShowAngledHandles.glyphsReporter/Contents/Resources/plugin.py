@@ -248,7 +248,7 @@ class ShowAngledHandles(ReporterPlugin):
 		"""
 		segments = []
 		for p in thisLayer.paths:
-			for s in p.segments:
+			for s in p.pyobjc_instanceMethods.segments():
 				segments.append(s)
 
 		duplicates = []
