@@ -1,0 +1,20 @@
+/* No comment provided by engineer. */
+"Almost Straight Lines" = "🤸‍♀️非垂直路径报错";
+
+/* No comment provided by engineer. */
+"Angled Handles" = "⚖️路径检查工具";
+
+/* No comment provided by engineer. */
+"Duplicate Path Segments" = "👯‍♂️路径重叠警告";
+
+/* No comment provided by engineer. */
+"Laser Beams" = "🔫摇臂过长警告";
+
+/* No comment provided by engineer. */
+"Only Mark Handles if they are Almost Straight" = "⚖️接近水平或垂直摇臂警告";
+
+/* No comment provided by engineer. */
+"Zero Handles" = "🏌️‍♀️单摇臂报错";
+
+/* No comment provided by engineer. */
+"‘Show Angled Handles’ Options:" = "路径检查工具";
