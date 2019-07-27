@@ -26,7 +26,7 @@
 		568830F122EB396A00FD25D1 /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		568830F222EB398300FD25D1 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		568830F322EB399800FD25D1 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		5688319A22EBAEEA00FD25D1 /* GlyphsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GlyphsCore.framework; path = "/Applications/Glyphs.app/Contents/Frameworks/GlyphsCore.framework"; sourceTree = "<absolute>"; };
+		5688319A22EBAEEA00FD25D1 /* GlyphsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GlyphsCore.framework; path = /Applications/Glyphs.app/Contents/Frameworks/GlyphsCore.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,6 +309,7 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mekkablue.ShowAngledHandlesX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
 				WRAPPER_EXTENSION = glyphsReporter;
 			};
 			name = Debug;
@@ -325,6 +326,7 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mekkablue.ShowAngledHandlesX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
 				WRAPPER_EXTENSION = glyphsReporter;
 			};
 			name = Release;
