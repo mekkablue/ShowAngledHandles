@@ -403,7 +403,9 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	for (GSPath *thisPath in thisLayer.paths) {
 		GSNode *prevNode = [thisPath.nodes lastObject];
 		for (GSNode *thisNode in thisPath.nodes) {
-			if (thisNode.type == OFFCURVE && prevNode.type != OFFCURVE && GSPointsEqual(thisNode.position, prevNode.position, 0.01)) {
+			if (((thisNode.type == OFFCURVE && prevNode.type != OFFCURVE) ||
+				 (thisNode.type != OFFCURVE && prevNode.type == OFFCURVE)) &&
+				GSPointsEqual(thisNode.position, prevNode.position, 0.01)) {
 				NSBezierPath *handleDot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
 				[purpleCircles appendBezierPath:handleDot];
 			}
