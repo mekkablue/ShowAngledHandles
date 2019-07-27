@@ -32,7 +32,7 @@ In this example, the shortcut is changed to Cmd-L. Instead of `l`, you can take 
 
 ### Requirements
 
-The plugin requires app version 2.3 (837) or later, running on OS X 10.9.1 or later. 
+The plugin requires app version 2.4 or later, running on OS X 10.9.1 or later. If it does not work for you, please update your app to the latest version.
 
 ### License
 
