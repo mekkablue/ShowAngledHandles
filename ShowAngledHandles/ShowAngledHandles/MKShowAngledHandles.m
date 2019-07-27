@@ -35,7 +35,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 }
 
 @implementation MKShowAngledHandles {
-	NSViewController<GSGlyphEditViewControllerProtocol>* _editViewController;
+	NSViewController<GSGlyphEditViewControllerProtocol> *_editViewController;
 }
 
 - (id)init {
@@ -47,7 +47,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 }
 
 - (void)loadPlugin {
-	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults registerDefaults:@{@"com.mekkablue.ShowAngledHandles.keyboardShortcut": @"y",
 								 @"com.mekkablue.ShowAngledHandles.zeroHandles": @YES,
 								 @"com.mekkablue.ShowAngledHandles.almostStraightLines": @YES,
@@ -61,11 +61,11 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	return 1;
 }
 
-- (NSString*)title {
+- (NSString *)title {
 	return NSLocalizedStringFromTableInBundle(@"Angled Handles", nil, [NSBundle bundleForClass:[self class]], @"");
 }
 
-- (NSString*)keyEquivalent {
+- (NSString *)keyEquivalent {
 	return [[NSUserDefaults standardUserDefaults] objectForKey:@"com.mekkablue.ShowAngledHandles.keyboardShortcut"];
 }
 
@@ -73,7 +73,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	return NSEventModifierFlagCommand;
 }
 
-- (void)drawForegroundForLayer:(GSLayer*)layer {
+- (void)drawForegroundForLayer:(GSLayer *)layer {
 	// Whatever you draw here will be displayed IN FRONT OF the paths.
 	// To get an NSBezierPath from a GSPath, use the bezierPath method:
 	//  [[myPath bezierPath] fill];
@@ -87,18 +87,18 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		[self drawAngledHandles:layer];
 
 		// mark duplicate path segments:
-		NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		if ([defaults boolForKey:@"com.mekkablue.ShowAngledHandles.duplicatePaths"]) {
 			[self markDuplicateSegments:layer];
 		}
 	}
 }
 
-- (void)drawBackgroundForLayer:(GSLayer*)layer options:(NSDictionary *)options {
+- (void)drawBackgroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
 	if ([self conditionsAreMetForDrawing]) {
 		CGFloat zoomedHandleSize = [self zoomedHandleSize];
 
-		NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		// mark slanted lines:
 		if ([defaults boolForKey:@"com.mekkablue.ShowAngledHandles.almostStraightLines"]) {
 			[self markNonStraightLines:layer scaledLineWidth:zoomedHandleSize * 0.7];
@@ -115,7 +115,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)drawBackgroundForInactiveLayer:(GSLayer*)Layer {
+- (void)drawBackgroundForInactiveLayer:(GSLayer *)Layer {
 	// Whatever you draw here will be displayed behind the paths, but for inactive masters.
 }
 
@@ -131,7 +131,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)setController:(NSViewController<GSGlyphEditViewControllerProtocol>*)Controller {
+- (void)setController:(NSViewController<GSGlyphEditViewControllerProtocol> *)Controller {
 	// Use [self controller]; as object for the current view controller.
 	_editViewController = Controller;
 }
@@ -140,7 +140,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	/*
 	Don't activate if text or pan (hand) tool are active.
 	*/
-	NSObject<GSWindowControllerProtocol>* currentController = (NSObject<GSWindowControllerProtocol>*)[[[_editViewController view] window] windowController];
+	NSObject<GSWindowControllerProtocol> *currentController = (NSObject<GSWindowControllerProtocol> *)[[[_editViewController view] window] windowController];
 	if (currentController) {
 		id tool = [currentController toolDrawDelegate];
 		BOOL textToolIsActive = [tool isKindOfClass:NSClassFromString(@"GlyphsToolText")];
@@ -164,20 +164,20 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	return handleSize;
 }
 
-- (void)drawAngledHandles:(GSLayer*)thisLayer {
+- (void)drawAngledHandles:(GSLayer *)thisLayer {
 	/*
 	Marks all BCPs on thisLayer that are not straight.
 	*/
 	[[NSColor colorWithCalibratedRed:1.0 green:0.1 blue:0.1 alpha:0.6] set];
 	BOOL onlyShowCloseToStraightHandles = [[NSUserDefaults standardUserDefaults] boolForKey:@"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"];
-	for (GSPath* thisPath in thisLayer.paths) {
-		GSNode* prevNode = [thisPath.nodes lastObject];
+	for (GSPath *thisPath in thisLayer.paths) {
+		GSNode *prevNode = [thisPath.nodes lastObject];
 		int nodeIndex = 0;
-		for (GSNode* thisNode in thisPath.nodes) {
+		for (GSNode *thisNode in thisPath.nodes) {
 			if (thisNode.type == OFFCURVE) { // BCP
 				// determine other node for angle measurement:
-				GSNode* nextNode = [thisPath nodeAtIndex:nodeIndex + 1];
-				GSNode* otherNode = nil;
+				GSNode *nextNode = [thisPath nodeAtIndex:nodeIndex + 1];
+				GSNode *otherNode = nil;
 				if (prevNode.type != OFFCURVE) {
 					otherNode = prevNode;
 				}
@@ -207,7 +207,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)drawHandleForNode:(GSNode*)node {
+- (void)drawHandleForNode:(GSNode *)node {
 	/*
 	Draws a BCP dot in the correct size.
 	*/
@@ -223,11 +223,11 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		handleSize *= 1.45;
 	}
 	// draw disc inside a rectangle around point position:
-	NSBezierPath* dot = [self roundDotForPoint:node.position handleSize:handleSize];
+	NSBezierPath *dot = [self roundDotForPoint:node.position handleSize:handleSize];
 	[dot fill];
 }
 
-- (NSBezierPath*)roundDotForPoint:(NSPoint)thisPoint handleSize:(CGFloat)markerWidth {
+- (NSBezierPath *)roundDotForPoint:(NSPoint)thisPoint handleSize:(CGFloat)markerWidth {
 	/*
 	Returns a circle with thisRadius around thisPoint.
 	*/
@@ -244,7 +244,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	or a dotted indicator line for max handles.
 	*/
 	// arms (beams):
-	NSBezierPath* arms = [NSBezierPath new];
+	NSBezierPath *arms = [NSBezierPath new];
 	[arms moveToPoint:thisPoint];
 	[arms lineToPoint:firstOnCurve];
 	[arms moveToPoint:thisPoint];
@@ -269,7 +269,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		CGFloat rightX = thisPoint.x + offset / zoomFactor;
 		CGFloat lowerY = thisPoint.y - offset / zoomFactor;
 		CGFloat upperY = thisPoint.y + offset / zoomFactor;
-		NSBezierPath* cross = [NSBezierPath new];
+		NSBezierPath *cross = [NSBezierPath new];
 		[cross moveToPoint:NSMakePoint(leftX, upperY)];
 		[cross lineToPoint:NSMakePoint(rightX, lowerY)];
 		[cross moveToPoint:NSMakePoint(leftX, lowerY)];
@@ -280,14 +280,14 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)markNonStraightLines:(GSLayer*)thisLayer scaledLineWidth:(CGFloat)scaledLineWidth {
+- (void)markNonStraightLines:(GSLayer *)thisLayer scaledLineWidth:(CGFloat)scaledLineWidth {
 	/*
 	Draws an indicator for nonstraight lines.
 	Opacity depends on deviation from straight (h/v) position.
 	*/
-	for (GSPath* thisPath in thisLayer.paths) {
-		GSNode* prevNode = [thisPath.nodes lastObject];
-		for (GSNode* thisNode in thisPath.nodes) {
+	for (GSPath *thisPath in thisLayer.paths) {
+		GSNode *prevNode = [thisPath.nodes lastObject];
+		for (GSNode *thisNode in thisPath.nodes) {
 			if (thisNode.type != OFFCURVE) { // on-curve
 
 				if (prevNode && prevNode.type != OFFCURVE) {
@@ -302,7 +302,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 							opacity = 1.0;
 						}
 						[[NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.0 alpha:opacity] set];
-						NSBezierPath* lineMarker = [NSBezierPath new];
+						NSBezierPath *lineMarker = [NSBezierPath new];
 						[lineMarker moveToPoint:prevNode.position];
 						[lineMarker lineToPoint:thisNode.position];
 						[lineMarker setLineCapStyle:NSRoundLineCapStyle];
@@ -316,29 +316,29 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)markDuplicateSegments:(GSLayer*)thisLayer {
+- (void)markDuplicateSegments:(GSLayer *)thisLayer {
 	/*
 	Collect identical segments and mark them.
 	*/
 	CGFloat zoomFactor = [self getScale];
-	NSMutableArray<GSPathSegment*>* segments = [NSMutableArray new];
-	for (GSPath* path in thisLayer.paths) {
+	NSMutableArray<GSPathSegment *> *segments = [NSMutableArray new];
+	for (GSPath *path in thisLayer.paths) {
 		[segments addObjectsFromArray:[path pathSegments]];
 	}
 
-	NSMutableArray* duplicates = [NSMutableArray new];
+	NSMutableArray *duplicates = [NSMutableArray new];
 	for (int idx = 0; idx < [segments count]; idx++) {
-		GSPathSegment* s1 = segments[idx];
+		GSPathSegment *s1 = segments[idx];
 		for (int jdx = idx + 1; jdx < [segments count]; jdx++) {
-			GSPathSegment* s2 = segments[jdx];
+			GSPathSegment *s2 = segments[jdx];
 			if ([s1 isEqualToSegment:s2]) {
 				[duplicates addObject:s1];
 			}
 		}
 	}
 	if ([duplicates count] > 0) {
-		NSBezierPath* duplicateMarker = [NSBezierPath new];
-		for (GSPathSegment* segment in duplicates) {
+		NSBezierPath *duplicateMarker = [NSBezierPath new];
+		for (GSPathSegment *segment in duplicates) {
 			[duplicateMarker moveToPoint:[segment pointAtIndex:0]];
 
 			if (segment->count == 2) {
@@ -360,13 +360,13 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)markCrossedHandles:(GSLayer*)thisLayer zoomFactor:(CGFloat)zoomFactor {
+- (void)markCrossedHandles:(GSLayer *)thisLayer zoomFactor:(CGFloat)zoomFactor {
 	/*
 	Marks crossed handles.
 	*/
-	for (GSPath* thisPath in thisLayer.paths) {
+	for (GSPath *thisPath in thisLayer.paths) {
 		int nodeIndex = -1;
-		for (GSNode* thisNode in thisPath.nodes) {
+		for (GSNode *thisNode in thisPath.nodes) {
 			nodeIndex++;
 			if (thisNode.type == CURVE) {
 				NSPoint pointA = thisNode.position;
@@ -393,18 +393,18 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)markZeroHandles:(GSLayer*)thisLayer handleSize:(int)handleSize {
+- (void)markZeroHandles:(GSLayer *)thisLayer handleSize:(int)handleSize {
 	/*
 	Marks all BCPs that are retracted into the nearest oncurve point.
 	*/
 	[[NSColor colorWithCalibratedRed:0.7 green:0.1 blue:0.9 alpha:0.7] set];
-	NSBezierPath* purpleCircles = [NSBezierPath new];
+	NSBezierPath *purpleCircles = [NSBezierPath new];
 
-	for (GSPath* thisPath in thisLayer.paths) {
-		GSNode* prevNode = [thisPath.nodes lastObject];
-		for (GSNode* thisNode in thisPath.nodes) {
+	for (GSPath *thisPath in thisLayer.paths) {
+		GSNode *prevNode = [thisPath.nodes lastObject];
+		for (GSNode *thisNode in thisPath.nodes) {
 			if (thisNode.type == OFFCURVE && prevNode.type != OFFCURVE && GSPointsEqual(thisNode.position, prevNode.position, 0.01)) {
-				NSBezierPath* handleDot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
+				NSBezierPath *handleDot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
 				[purpleCircles appendBezierPath:handleDot];
 			}
 			prevNode = thisNode;
@@ -413,15 +413,15 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	[purpleCircles fill];
 }
 
-- (void)conditionalContextMenus:(NSMenu*)menu {
+- (void)conditionalContextMenus:(NSMenu *)menu {
 	/*
 	Builds contextual menus for plug-in options.
 	*/
 
-	NSBundle* bundle = [NSBundle bundleForClass:[self class]];
-	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+	NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-	NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"‘Show Angled Handles’ Options:", nil, bundle, @"") action:nil keyEquivalent:@""];
+	NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"‘Show Angled Handles’ Options:", nil, bundle, @"") action:nil keyEquivalent:@""];
 	[menu addItem:item];
 
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Zero Handles", nil, bundle, @"") action:@selector(toggleZeroHandles:) keyEquivalent:@""];
@@ -470,14 +470,14 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	[self toggleSetting:@"duplicatePaths"];
 }
 
-- (void)toggleSetting:(NSString*)prefName {
-	NSString* pref = [@"com.mekkablue.ShowAngledHandles." stringByAppendingString:prefName];
-	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+- (void)toggleSetting:(NSString *)prefName {
+	NSString *pref = [@"com.mekkablue.ShowAngledHandles." stringByAppendingString:prefName];
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults setBool:![defaults boolForKey:pref] forKey:pref];
 }
 
-- (void)addMenuItemsForEvent:(NSEvent*)event toMenu:(NSMenu*)contextMenu {
-	NSMenuItem* newSeparator = [NSMenuItem separatorItem];
+- (void)addMenuItemsForEvent:(NSEvent *)event toMenu:(NSMenu *)contextMenu {
+	NSMenuItem *newSeparator = [NSMenuItem separatorItem];
 	[contextMenu addItem:newSeparator];
 
 	[self conditionalContextMenus:contextMenu];
