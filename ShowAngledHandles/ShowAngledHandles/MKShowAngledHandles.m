@@ -190,7 +190,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 							[self drawHandleForNode:thisNode];
 						}
 						else {
-							CGFloat angle = angleBetweenPoints(thisNode.position, otherNode.position); // % 90.0;
+							CGFloat angle = fabs(fmodf(angleBetweenPoints(thisNode.position, otherNode.position), 90.0));
 							CGFloat diffX = fabs(thisNode.position.x - otherNode.position.x);
 							CGFloat diffY = fabs(thisNode.position.y - otherNode.position.y);
 							BOOL almostStraight = diffX <= 2.0 || diffY <= 2.0 || angle < 8.0 || angle > 82.0;
@@ -379,11 +379,11 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 					GSNearestPointOnLine(intersection, pointA, pointB, &tAB);
 					CGFloat tDC;
 					GSNearestPointOnLine(intersection, pointD, pointC, &tDC);
-					if (tAB < 1) {
+					if (tAB < 1 && tAB >= 0) {
 						BOOL smooth = GSPointsEqual(intersection, pointB, 0.001);
 						[self drawCrossForPoint:intersection firstOnCurve:pointA secondOnCurve:pointD zoomFactor:zoomFactor smoothHandle:smooth];
 					}
-					else if (tDC < 1) {
+					else if (tDC < 1 && tDC >= 0) {
 						BOOL smooth = GSPointsEqual(intersection, pointC, 0.001);
 						[self drawCrossForPoint:intersection firstOnCurve:pointA secondOnCurve:pointD zoomFactor:zoomFactor smoothHandle:smooth];
 					}
@@ -401,12 +401,13 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	NSBezierPath* purpleCircles = [NSBezierPath new];
 
 	for (GSPath* thisPath in thisLayer.paths) {
-		GSNode* previousNode = [thisPath.nodes lastObject];
+		GSNode* prevNode = [thisPath.nodes lastObject];
 		for (GSNode* thisNode in thisPath.nodes) {
-			if (thisNode.type == OFFCURVE && previousNode.type != OFFCURVE && GSPointsEqual(thisNode.position, previousNode.position, 0.01)) {
+			if (thisNode.type == OFFCURVE && prevNode.type != OFFCURVE && GSPointsEqual(thisNode.position, prevNode.position, 0.01)) {
 				NSBezierPath* handleDot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
 				[purpleCircles appendBezierPath:handleDot];
 			}
+			prevNode = thisNode;
 		}
 	}
 	[purpleCircles fill];
