@@ -379,12 +379,12 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 					GSNearestPointOnLine(intersection, pointA, pointB, &tAB);
 					CGFloat tDC;
 					GSNearestPointOnLine(intersection, pointD, pointC, &tDC);
-					if (tAB < 1 && tAB >= 0) {
-						BOOL smooth = GSPointsEqual(intersection, pointB, 0.001);
+					if (tAB <= 1.001 && tAB >= 0) {
+						BOOL smooth = GSPointsEqual(intersection, pointB, 0.001) && tDC >= 0.999;
 						[self drawCrossForPoint:intersection firstOnCurve:pointA secondOnCurve:pointD zoomFactor:zoomFactor smoothHandle:smooth];
 					}
-					else if (tDC < 1 && tDC >= 0) {
-						BOOL smooth = GSPointsEqual(intersection, pointC, 0.001);
+					else if (tDC <= 1.001 && tDC >= 0) {
+						BOOL smooth = GSPointsEqual(intersection, pointC, 0.001) && tAB >= 0.999;
 						[self drawCrossForPoint:intersection firstOnCurve:pointA secondOnCurve:pointD zoomFactor:zoomFactor smoothHandle:smooth];
 					}
 				}
