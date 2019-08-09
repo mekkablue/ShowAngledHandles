@@ -53,11 +53,11 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 								 @"com.mekkablue.ShowAngledHandles.almostStraightLines": @YES,
 								 @"com.mekkablue.ShowAngledHandles.laserBeams": @YES,
 								 @"com.mekkablue.ShowAngledHandles.duplicatePaths": @YES,
-								 @"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles": @NO}];
+								 @"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles": @YES}];
 }
 
 - (NSUInteger)interfaceVersion {
-	// Distinguishes the API verison the plugin was built for. Return 1.
+	// Distinguishes the API version the plugin was built for. Return 1.
 	return 1;
 }
 
@@ -109,9 +109,9 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 			[self markCrossedHandles:layer zoomFactor:[self getScale]];
 		}
 		// mark zero handles:
-		if ([defaults boolForKey:@"com.mekkablue.ShowAngledHandles.zeroHandles"]) {
-			[self markZeroHandles:layer handleSize:zoomedHandleSize * 2];
-		}
+		//if ([defaults boolForKey:@"com.mekkablue.ShowAngledHandles.zeroHandles"]) {
+		[self markZeroHandles:layer handleSize:zoomedHandleSize * 2];
+		//}
 	}
 }
 
@@ -426,10 +426,10 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"‘Show Angled Handles’ Options:", nil, bundle, @"") action:nil keyEquivalent:@""];
 	[menu addItem:item];
 
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Zero Handles", nil, bundle, @"") action:@selector(toggleZeroHandles:) keyEquivalent:@""];
-	item.target = self;
-	[item setState:[defaults boolForKey:@"com.mekkablue.ShowAngledHandles.zeroHandles"]];
-	[menu addItem:item];
+	//item = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Zero Handles", nil, bundle, @"") action:@selector(toggleZeroHandles:) keyEquivalent:@""];
+	//item.target = self;
+	//[item setState:[defaults boolForKey:@"com.mekkablue.ShowAngledHandles.zeroHandles"]];
+	//[menu addItem:item];
 
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Almost Straight Lines", nil, bundle, @"") action:@selector(toggleAlmostStraightLines:) keyEquivalent:@""];
 	item.target = self;
