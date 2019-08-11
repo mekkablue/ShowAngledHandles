@@ -49,7 +49,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 - (void)loadPlugin {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults registerDefaults:@{@"com.mekkablue.ShowAngledHandles.keyboardShortcut": @"y",
-								 @"com.mekkablue.ShowAngledHandles.zeroHandles": @YES,
+//                                 @"com.mekkablue.ShowAngledHandles.zeroHandles": @YES,
 								 @"com.mekkablue.ShowAngledHandles.almostStraightLines": @YES,
 								 @"com.mekkablue.ShowAngledHandles.laserBeams": @YES,
 								 @"com.mekkablue.ShowAngledHandles.duplicatePaths": @YES,
@@ -456,9 +456,9 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	[self toggleSetting:@"onlyShowCloseToStraightHandles"];
 }
 
-- (void)toggleZeroHandles:(id)sender {
-	[self toggleSetting:@"zeroHandles"];
-}
+//- (void)toggleZeroHandles:(id)sender {
+//    [self toggleSetting:@"zeroHandles"];
+//}
 
 - (void)toggleAlmostStraightLines:(id)sender {
 	[self toggleSetting:@"almostStraightLines"];

@@ -298,10 +298,11 @@
 		5688304022EB29EE00FD25D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_LOCATION = YES;
-				DEVELOPMENT_TEAM = X2L8375ZQ7;
+				DEVELOPMENT_TEAM = "";
 				DSTROOT = "$(USER_LIBRARY_DIR)/Application Support/Glyphs/Plugins";
 				FRAMEWORK_SEARCH_PATHS = "$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks";
 				GCC_PREFIX_HEADER = "ShowAngledHandles/ShowAngledHandles-Prefix.pch";
@@ -309,6 +310,7 @@
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mekkablue.ShowAngledHandlesX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_INSTALLED_PRODUCT = NO;
 				WRAPPER_EXTENSION = glyphsReporter;
 			};
@@ -317,15 +319,17 @@
 		5688304122EB29EE00FD25D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = X2L8375ZQ7;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks";
 				GCC_PREFIX_HEADER = "ShowAngledHandles/ShowAngledHandles-Prefix.pch";
 				INFOPLIST_FILE = ShowAngledHandles/Info.plist;
 				INSTALL_PATH = /;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mekkablue.ShowAngledHandlesX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_INSTALLED_PRODUCT = NO;
 				WRAPPER_EXTENSION = glyphsReporter;
 			};

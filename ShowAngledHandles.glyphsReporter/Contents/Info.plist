@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>17G7024</string>
+	<string>18F132</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -15,27 +15,27 @@
 	<key>CFBundleName</key>
 	<string>ShowAngledHandles</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.4</string>
+	<string>2.5</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>41</string>
+	<string>42</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>10B61</string>
+	<string>10G8</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
-	<string>18B71</string>
+	<string>18G74</string>
 	<key>DTSDKName</key>
 	<string>macosx10.14</string>
 	<key>DTXcode</key>
-	<string>1010</string>
+	<string>1030</string>
 	<key>DTXcodeBuild</key>
-	<string>10B61</string>
+	<string>10G8</string>
 	<key>NSPrincipalClass</key>
 	<string>MKShowAngledHandles</string>
 </dict>
