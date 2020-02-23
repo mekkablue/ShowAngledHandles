@@ -41,19 +41,19 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 - (id)init {
 	self = [super init];
 	if (self) {
-		// do stuff
+        [self loadPlugin];
 	}
 	return self;
 }
 
 - (void)loadPlugin {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	[defaults registerDefaults:@{@"com.mekkablue.ShowAngledHandles.keyboardShortcut": @"y",
-//                                 @"com.mekkablue.ShowAngledHandles.zeroHandles": @YES,
-								 @"com.mekkablue.ShowAngledHandles.almostStraightLines": @YES,
-								 @"com.mekkablue.ShowAngledHandles.laserBeams": @YES,
-								 @"com.mekkablue.ShowAngledHandles.duplicatePaths": @YES,
-								 @"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles": @YES}];
+	[defaults registerDefaults:@{
+         @"com.mekkablue.ShowAngledHandles.almostStraightLines": @YES,
+         @"com.mekkablue.ShowAngledHandles.laserBeams": @YES,
+         @"com.mekkablue.ShowAngledHandles.duplicatePaths": @YES,
+         @"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles": @YES,
+    }];
 }
 
 - (NSUInteger)interfaceVersion {
@@ -66,11 +66,12 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 }
 
 - (NSString *)keyEquivalent {
-	return [[NSUserDefaults standardUserDefaults] objectForKey:@"com.mekkablue.ShowAngledHandles.keyboardShortcut"];
+	return @"y";
 }
 
 - (int)modifierMask {
-	return NSEventModifierFlagCommand;
+//	return NSEventModifierFlagCommand;
+    return NSEventModifierFlagControl;
 }
 
 - (void)drawForegroundForLayer:(GSLayer *)layer {
