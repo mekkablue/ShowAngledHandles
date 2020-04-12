@@ -18,10 +18,14 @@
 #import <GlyphsCore/GSPathSegment.h>
 #import <GlyphsCore/GSWindowControllerProtocol.h>
 #import <GlyphsCore/GlyphsFilterProtocol.h>
-
+#import <GlyphsCore/GSProxyShapes.h>
 // #import "GSEditViewController.h"
 // #import "GSWindowController.h"
 #import <GlyphsCore/GSGeometrieHelper.h>
+
+@interface GSPath (Glyphs2)
+- (NSArray *)pathSegments;
+@end
 
 CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	/*
@@ -323,7 +327,12 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	CGFloat zoomFactor = [self getScale];
 	NSMutableArray<GSPathSegment *> *segments = [NSMutableArray new];
 	for (GSPath *path in thisLayer.paths) {
-		[segments addObjectsFromArray:[path pathSegments]];
+		if ([path respondsToSelector:@selector(pathSegments)]) {
+			[segments addObjectsFromArray:[path pathSegments]];
+		}
+		else {
+			[segments addObjectsFromArray:[path segments]];
+		}
 	}
 
 	NSMutableArray *duplicates = [NSMutableArray new];
