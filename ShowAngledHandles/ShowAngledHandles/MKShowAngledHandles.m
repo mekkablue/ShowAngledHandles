@@ -41,7 +41,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 - (id)init {
 	self = [super init];
 	if (self) {
-        [self loadPlugin];
+		[self loadPlugin];
 	}
 	return self;
 }
@@ -49,11 +49,11 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 - (void)loadPlugin {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults registerDefaults:@{
-         @"com.mekkablue.ShowAngledHandles.almostStraightLines": @YES,
-         @"com.mekkablue.ShowAngledHandles.laserBeams": @YES,
-         @"com.mekkablue.ShowAngledHandles.duplicatePaths": @YES,
-         @"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles": @YES,
-    }];
+		@"com.mekkablue.ShowAngledHandles.almostStraightLines": @YES,
+		@"com.mekkablue.ShowAngledHandles.laserBeams": @YES,
+		@"com.mekkablue.ShowAngledHandles.duplicatePaths": @YES,
+		@"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles": @YES,
+	}];
 }
 
 - (NSUInteger)interfaceVersion {
@@ -70,8 +70,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 }
 
 - (int)modifierMask {
-//	return NSEventModifierFlagCommand;
-    return NSEventModifierFlagControl;
+	return NSEventModifierFlagControl;
 }
 
 - (void)drawForegroundForLayer:(GSLayer *)layer {
@@ -79,8 +78,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	// To get an NSBezierPath from a GSPath, use the bezierPath method:
 	//  [[myPath bezierPath] fill];
 	// You can apply that to a full layer at once:
-	// [myLayer bezierPath];	   # all closed paths
-	// [myLayer openBezierPath];   # all open paths
+	// [myLayer bezierPath];		# all closed paths
+	// [myLayer openBezierPath];	# all open paths
 
 	if ([self conditionsAreMetForDrawing]) {
 
@@ -458,7 +457,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 }
 
 //- (void)toggleZeroHandles:(id)sender {
-//    [self toggleSetting:@"zeroHandles"];
+//	[self toggleSetting:@"zeroHandles"];
 //}
 
 - (void)toggleAlmostStraightLines:(id)sender {
