@@ -18,7 +18,7 @@
 #import <GlyphsCore/GSPathSegment.h>
 #import <GlyphsCore/GSWindowControllerProtocol.h>
 #import <GlyphsCore/GlyphsFilterProtocol.h>
-#import <GlyphsCore/GSProxyShapes.h>
+//#import <GlyphsCore/GSProxyShapes.h>
 // #import "GSEditViewController.h"
 // #import "GSWindowController.h"
 #import <GlyphsCore/GSGeometrieHelper.h>
