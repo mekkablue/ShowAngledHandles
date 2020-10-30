@@ -290,32 +290,33 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	Opacity depends on deviation from straight (h/v) position.
 	*/
 	for (GSPath *thisPath in thisLayer.paths) {
-		GSNode *prevNode = [thisPath.nodes lastObject];
+        GSNode *prevNode = [thisPath.nodes lastObject];
 		for (GSNode *thisNode in thisPath.nodes) {
-			if (thisNode.type != OFFCURVE) { // on-curve
-
-				if (prevNode && prevNode.type != OFFCURVE) {
-					CGFloat unstraightness = fabs(thisNode.position.x - prevNode.position.x);
-					CGFloat unstraightnessY = fabs(thisNode.position.y - prevNode.position.y);
-					if (unstraightness > unstraightnessY) {
-						unstraightness = unstraightnessY;
-					}
-					if (unstraightness > 0.1 && unstraightness < 20.0) {
-						CGFloat opacity = 3.0 / unstraightness;
-						if (opacity > 1.0) {
-							opacity = 1.0;
-						}
-						[[NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.0 alpha:opacity] set];
-						NSBezierPath *lineMarker = [NSBezierPath new];
-						[lineMarker moveToPoint:prevNode.position];
-						[lineMarker lineToPoint:thisNode.position];
-						[lineMarker setLineCapStyle:NSRoundLineCapStyle];
-						[lineMarker setLineWidth:scaledLineWidth];
-						[lineMarker stroke];
-					}
-				}
-			}
-			prevNode = thisNode;
+            if ([thisPath closed] || (thisNode != thisPath.nodes[0])) {
+                if (thisNode.type != OFFCURVE) { // on-curve
+                    if (prevNode && prevNode.type != OFFCURVE) {
+                        CGFloat unstraightness = fabs(thisNode.position.x - prevNode.position.x);
+                        CGFloat unstraightnessY = fabs(thisNode.position.y - prevNode.position.y);
+                        if (unstraightness > unstraightnessY) {
+                            unstraightness = unstraightnessY;
+                        }
+                        if (unstraightness > 0.1 && unstraightness < 20.0) {
+                            CGFloat opacity = 3.0 / unstraightness;
+                            if (opacity > 1.0) {
+                                opacity = 1.0;
+                            }
+                            [[NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.0 alpha:opacity] set];
+                            NSBezierPath *lineMarker = [NSBezierPath new];
+                            [lineMarker moveToPoint:prevNode.position];
+                            [lineMarker lineToPoint:thisNode.position];
+                            [lineMarker setLineCapStyle:NSRoundLineCapStyle];
+                            [lineMarker setLineWidth:scaledLineWidth];
+                            [lineMarker stroke];
+                        }
+                    }
+                }
+            }
+            prevNode = thisNode;
 		}
 	}
 }
