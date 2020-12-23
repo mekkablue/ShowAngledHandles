@@ -15,13 +15,13 @@
 	<key>CFBundleName</key>
 	<string>ShowAngledHandles</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.1</string>
+	<string>3.0.2</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>45</string>
+	<string>46</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
@@ -40,5 +40,7 @@
 	<string>10.13</string>
 	<key>NSPrincipalClass</key>
 	<string>MKShowAngledHandles</string>
+	<key>productReleaseNotes</key>
+	<string>update binary files for Glyphs3</string>
 </dict>
 </plist>
