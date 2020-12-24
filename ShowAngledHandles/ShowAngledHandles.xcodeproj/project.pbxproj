@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5688303222EB29ED00FD25D1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5688303122EB29ED00FD25D1 /* Cocoa.framework */; };
-		5688303522EB29EE00FD25D1 /* ShowAngledHandles-Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 5688303422EB29EE00FD25D1 /* ShowAngledHandles-Prefix.pch */; };
 		5688303B22EB29EE00FD25D1 /* MKShowAngledHandles.m in Sources */ = {isa = PBXBuildFile; fileRef = 5688303A22EB29EE00FD25D1 /* MKShowAngledHandles.m */; };
 		568830EF22EB392F00FD25D1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 568830ED22EB392F00FD25D1 /* Localizable.strings */; };
 		5688319B22EBAEEA00FD25D1 /* GlyphsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5688319A22EBAEEA00FD25D1 /* GlyphsCore.framework */; };
@@ -148,7 +147,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5688303522EB29EE00FD25D1 /* ShowAngledHandles-Prefix.pch in Resources */,
 				568830EF22EB392F00FD25D1 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,7 +303,7 @@
 				DEPLOYMENT_LOCATION = YES;
 				DEVELOPMENT_TEAM = "";
 				DSTROOT = "$(USER_LIBRARY_DIR)/Application Support/Glyphs 3/Plugins";
-				FRAMEWORK_SEARCH_PATHS = "$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SYSTEM_APPS_DIR)/Glyphs 3.app/Contents/Frameworks\"";
 				GCC_PREFIX_HEADER = "ShowAngledHandles/ShowAngledHandles-Prefix.pch";
 				INFOPLIST_FILE = ShowAngledHandles/Info.plist;
 				INSTALL_PATH = /;
@@ -326,7 +324,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(SYSTEM_APPS_DIR)/Glyphs.app/Contents/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SYSTEM_APPS_DIR)/Glyphs 3.app/Contents/Frameworks\"";
 				GCC_PREFIX_HEADER = "ShowAngledHandles/ShowAngledHandles-Prefix.pch";
 				INFOPLIST_FILE = ShowAngledHandles/Info.plist;
 				INSTALL_PATH = /;
