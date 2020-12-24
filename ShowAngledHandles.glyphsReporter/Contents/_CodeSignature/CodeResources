@@ -4,10 +4,6 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Resources/ShowAngledHandles-Prefix.pch</key>
-		<data>
-		y9jMqQyRLXpNVES1uuQFrkwYlPg=
-		</data>
 		<key>Resources/de.lproj/Localizable.strings</key>
 		<dict>
 			<key>hash</key>
@@ -56,13 +52,6 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Resources/ShowAngledHandles-Prefix.pch</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			8LllhrdCdofS3aJOxAmTvSgOKEtiqmrPs6bg6G9AFmw=
-			</data>
-		</dict>
 		<key>Resources/de.lproj/Localizable.strings</key>
 		<dict>
 			<key>hash2</key>
