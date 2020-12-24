@@ -18,7 +18,7 @@
 #import <GlyphsCore/GSPathSegment.h>
 #import <GlyphsCore/GSWindowControllerProtocol.h>
 #import <GlyphsCore/GlyphsFilterProtocol.h>
-//#import <GlyphsCore/GSProxyShapes.h>
+#import <GlyphsCore/GSProxyShapes.h>
 // #import "GSEditViewController.h"
 // #import "GSWindowController.h"
 #import <GlyphsCore/GSGeometrieHelper.h>
@@ -78,6 +78,10 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 }
 
 - (void)drawForegroundForLayer:(GSLayer *)layer {
+	[self drawForegroundForLayer:layer options:nil];
+}
+
+- (void)drawForegroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
 	// Whatever you draw here will be displayed IN FRONT OF the paths.
 	// To get an NSBezierPath from a GSPath, use the bezierPath method:
 	//  [[myPath bezierPath] fill];
