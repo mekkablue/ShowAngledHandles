@@ -40,6 +40,15 @@
 			<key>optional</key>
 			<true/>
 		</dict>
+		<key>Resources/it.lproj/Localizable.strings</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			gpcPPpirT7hLkbRbOonlj9aY5GM=
+			</data>
+			<key>optional</key>
+			<true/>
+		</dict>
 		<key>Resources/zh-Hans.lproj/Localizable.strings</key>
 		<dict>
 			<key>hash</key>
@@ -84,6 +93,15 @@
 			<key>hash2</key>
 			<data>
 			UupEm2BhInaCTd/xNJr1MBG9Sa/lPgOROvKb72DvRx8=
+			</data>
+			<key>optional</key>
+			<true/>
+		</dict>
+		<key>Resources/it.lproj/Localizable.strings</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Ll8ztWqMIxm2OsatakUuWqryaG1VkMflofeovfatNL0=
 			</data>
 			<key>optional</key>
 			<true/>

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>18G6032</string>
+	<string>23E224</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -15,32 +15,32 @@
 	<key>CFBundleName</key>
 	<string>ShowAngledHandles</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.4</string>
+	<string>3.0.2</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>49</string>
+	<string>45</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>11C504</string>
+	<string></string>
+	<key>DTPlatformName</key>
+	<string>macosx</string>
 	<key>DTPlatformVersion</key>
-	<string>GM</string>
+	<string>14.4</string>
 	<key>DTSDKBuild</key>
-	<string>19B90</string>
+	<string>23E208</string>
 	<key>DTSDKName</key>
-	<string>macosx10.15</string>
+	<string>macosx14.4</string>
 	<key>DTXcode</key>
-	<string>1130</string>
+	<string>1530</string>
 	<key>DTXcodeBuild</key>
-	<string>11C504</string>
+	<string>15E204a</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.13</string>
 	<key>NSPrincipalClass</key>
 	<string>MKShowAngledHandles</string>
-	<key>productReleaseNotes</key>
-	<string>update binary files for Glyphs3</string>
 </dict>
 </plist>
