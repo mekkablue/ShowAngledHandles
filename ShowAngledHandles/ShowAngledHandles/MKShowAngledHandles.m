@@ -120,6 +120,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		//if ([defaults boolForKey:@"com.mekkablue.ShowAngledHandles.zeroHandles"]) {
 		[self markZeroHandles:layer handleSize:zoomedHandleSize * 2];
 		//}
+        [self markNodesOffMetrics:layer handleSize:zoomedHandleSize * 2];
 	}
 }
 
@@ -334,8 +335,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	for (GSPath *path in thisLayer.paths) {
 		if ([path respondsToSelector:@selector(pathSegments)]) {
 			[segments addObjectsFromArray:[path pathSegments]];
-		}
-		else {
+		} else {
 			[segments addObjectsFromArray:[path segments]];
 		}
 	}
@@ -343,9 +343,17 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	NSMutableArray *duplicates = [NSMutableArray new];
 	for (int idx = 0; idx < [segments count]; idx++) {
 		GSPathSegment *s1 = segments[idx];
-		for (int jdx = idx + 1; jdx < [segments count]; jdx++) {
+        for (int jdx = idx + 1; jdx < [segments count]; jdx++) {
 			GSPathSegment *s2 = segments[jdx];
-			if ([s1 isEqualToSegment:s2]) {
+            if (s1.countOfPoints != s2.countOfPoints) {
+                continue;
+            }
+            bool segmentIsTheSame = YES;
+            for (int pIdx = 0; pIdx < s1.countOfPoints; pIdx++) {
+                bool pointIsTheSame = GSPointsEqual(s1.segmentStruct.elements[pIdx], s2.segmentStruct.elements[pIdx], 0.0001);
+                segmentIsTheSame = segmentIsTheSame && pointIsTheSame;
+            }
+            if (segmentIsTheSame) {
 				[duplicates addObject:s1];
 			}
 		}
@@ -357,8 +365,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 			if (segment->count == 2) {
 				[duplicateMarker lineToPoint:[segment pointAtIndex:1]];
-			}
-			else {
+			} else {
 				[duplicateMarker curveToPoint:[segment pointAtIndex:3] controlPoint1:[segment pointAtIndex:1] controlPoint2:[segment pointAtIndex:2]];
 			}
 		}
@@ -427,6 +434,36 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		}
 	}
 	[purpleCircles fill];
+}
+
+- (void)markNodesOffMetrics:(GSLayer *)thisLayer handleSize:(int)handleSize {
+    /*
+    Marks all BCPs that are retracted into the nearest oncurve point.
+    */
+    [[NSColor colorWithCalibratedRed:.0 green:.6 blue:0.2 alpha:0.7] set];
+    NSBezierPath *greenCircles = [NSBezierPath new];
+    
+    for (GSPath *thisPath in thisLayer.paths) {
+        for (GSNode *thisNode in thisPath.nodes) {
+            if (thisNode.type == OFFCURVE) {
+                continue;
+            }
+            for (GSMetricValue *thisMetric in thisLayer.metrics) {
+                float diff = thisMetric.position - thisNode.position.y;
+                if (diff != 0.0 && -1.9 < diff && diff < 1.9) {
+                    NSBezierPath *dot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
+                    [greenCircles appendBezierPath:dot];
+                    break;
+                }
+            }
+        }
+    }
+    
+    float zoomFactor = [self getScale];
+    CGFloat dash[2] = {2.0 / zoomFactor, 2.0 / zoomFactor};
+    [greenCircles setLineDash:dash count:2 phase:2.0 / zoomFactor];
+    [greenCircles setLineWidth:2.0 / zoomFactor];
+    [greenCircles stroke];
 }
 
 - (void)conditionalContextMenus:(NSMenu *)menu {
