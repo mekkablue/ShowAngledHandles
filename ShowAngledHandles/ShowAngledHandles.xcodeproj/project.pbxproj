@@ -50,6 +50,7 @@
 				5688302F22EB29ED00FD25D1 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		5688302F22EB29ED00FD25D1 /* Products */ = {
 			isa = PBXGroup;
@@ -114,6 +115,7 @@
 		5688302622EB29ED00FD25D1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = MK;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = mekkablue;
 				TargetAttributes = {
