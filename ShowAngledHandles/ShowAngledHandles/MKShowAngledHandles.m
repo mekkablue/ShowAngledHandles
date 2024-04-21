@@ -42,6 +42,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	NSViewController<GSGlyphEditViewControllerProtocol> *_editViewController;
 }
 
+@synthesize controller;
+
 - (id)init {
 	self = [super init];
 	if (self) {
@@ -73,7 +75,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	return @"y";
 }
 
-- (int)modifierMask {
+- (NSEventModifierFlags)modifierMask {
 	return NSEventModifierFlagControl;
 }
 
