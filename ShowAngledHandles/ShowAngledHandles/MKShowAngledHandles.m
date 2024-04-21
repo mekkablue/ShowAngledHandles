@@ -29,10 +29,10 @@
 
 CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	/*
-	Returns the angle (in degrees) of the straight line between firstPoint and secondPoint,
-	0 degrees being the second point to the right of first point.
-	firstPoint, secondPoint: must be NSPoint or GSNode
-	*/
+	 Returns the angle (in degrees) of the straight line between firstPoint and secondPoint,
+	 0 degrees being the second point to the right of first point.
+	 firstPoint, secondPoint: must be NSPoint or GSNode
+	 */
 	CGFloat xDiff = secondPoint.x - firstPoint.x;
 	CGFloat yDiff = secondPoint.y - firstPoint.y;
 	return DEG(atan2(yDiff, xDiff));
@@ -120,7 +120,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		//if ([defaults boolForKey:@"com.mekkablue.ShowAngledHandles.zeroHandles"]) {
 		[self markZeroHandles:layer handleSize:zoomedHandleSize * 2];
 		//}
-        [self markNodesOffMetrics:layer handleSize:zoomedHandleSize * 2];
+		[self markNodesOffMetrics:layer handleSize:zoomedHandleSize * 2];
 	}
 }
 
@@ -147,8 +147,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (BOOL)conditionsAreMetForDrawing {
 	/*
-	Don't activate if text or pan (hand) tool are active.
-	*/
+	 Don't activate if text or pan (hand) tool are active.
+	 */
 	NSObject<GSWindowControllerProtocol> *currentController = (NSObject<GSWindowControllerProtocol> *)[[[_editViewController view] window] windowController];
 	if (currentController) {
 		id tool = [currentController toolDrawDelegate];
@@ -163,9 +163,9 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (CGFloat)zoomedHandleSize {
 	/*
-	Returns the proper handle size according to user settings:
-	Glyphs > Preferences > User Preferences > Handle Size
-	*/
+	 Returns the proper handle size according to user settings:
+	 Glyphs > Preferences > User Preferences > Handle Size
+	 */
 	int handleSizeIndex = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"GSHandleSize"];
 
 	static int handleSizes[3] = {5, 8, 12};
@@ -175,8 +175,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (void)drawAngledHandles:(GSLayer *)thisLayer {
 	/*
-	Marks all BCPs on thisLayer that are not straight.
-	*/
+	 Marks all BCPs on thisLayer that are not straight.
+	 */
 	[[NSColor colorWithCalibratedRed:1.0 green:0.1 blue:0.1 alpha:0.6] set];
 	BOOL onlyShowCloseToStraightHandles = [[NSUserDefaults standardUserDefaults] boolForKey:@"com.mekkablue.ShowAngledHandles.onlyShowCloseToStraightHandles"];
 	for (GSPath *thisPath in thisLayer.paths) {
@@ -218,8 +218,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (void)drawHandleForNode:(GSNode *)node {
 	/*
-	Draws a BCP dot in the correct size.
-	*/
+	 Draws a BCP dot in the correct size.
+	 */
 	// calculate handle size:
 	CGFloat handleSize = [self zoomedHandleSize];
 
@@ -238,8 +238,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (NSBezierPath *)roundDotForPoint:(NSPoint)thisPoint handleSize:(CGFloat)markerWidth {
 	/*
-	Returns a circle with thisRadius around thisPoint.
-	*/
+	 Returns a circle with thisRadius around thisPoint.
+	 */
 	NSRect myRect = NSMakeRect(
 		thisPoint.x - markerWidth * 0.5, thisPoint.y - markerWidth * 0.5, // origin
 		markerWidth, markerWidth										  // size
@@ -249,9 +249,9 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (void)drawCrossForPoint:(NSPoint)thisPoint firstOnCurve:(NSPoint)firstOnCurve secondOnCurve:(NSPoint)secondOnCurve zoomFactor:(CGFloat)zoomFactor smoothHandle:(BOOL)smoothHandle {
 	/*
-	Draws a laser beam and an intersection cross for handles that are too long,
-	or a dotted indicator line for max handles.
-	*/
+	 Draws a laser beam and an intersection cross for handles that are too long,
+	 or a dotted indicator line for max handles.
+	 */
 	// arms (beams):
 	NSBezierPath *arms = [NSBezierPath new];
 	[arms moveToPoint:thisPoint];
@@ -291,45 +291,45 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (void)markNonStraightLines:(GSLayer *)thisLayer scaledLineWidth:(CGFloat)scaledLineWidth {
 	/*
-	Draws an indicator for nonstraight lines.
-	Opacity depends on deviation from straight (h/v) position.
-	*/
+	 Draws an indicator for nonstraight lines.
+	 Opacity depends on deviation from straight (h/v) position.
+	 */
 	for (GSPath *thisPath in thisLayer.paths) {
-        GSNode *prevNode = [thisPath.nodes lastObject];
+		GSNode *prevNode = [thisPath.nodes lastObject];
 		for (GSNode *thisNode in thisPath.nodes) {
-            if ([thisPath closed] || (thisNode != thisPath.nodes[0])) {
-                if (thisNode.type != OFFCURVE) { // on-curve
-                    if (prevNode && prevNode.type != OFFCURVE) {
-                        CGFloat unstraightness = fabs(thisNode.position.x - prevNode.position.x);
-                        CGFloat unstraightnessY = fabs(thisNode.position.y - prevNode.position.y);
-                        if (unstraightness > unstraightnessY) {
-                            unstraightness = unstraightnessY;
-                        }
-                        if (unstraightness > 0.1 && unstraightness < 20.0) {
-                            CGFloat opacity = 3.0 / unstraightness;
-                            if (opacity > 1.0) {
-                                opacity = 1.0;
-                            }
-                            [[NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.0 alpha:opacity] set];
-                            NSBezierPath *lineMarker = [NSBezierPath new];
-                            [lineMarker moveToPoint:prevNode.position];
-                            [lineMarker lineToPoint:thisNode.position];
-                            [lineMarker setLineCapStyle:NSRoundLineCapStyle];
-                            [lineMarker setLineWidth:scaledLineWidth];
-                            [lineMarker stroke];
-                        }
-                    }
-                }
-            }
-            prevNode = thisNode;
+			if ([thisPath closed] || (thisNode != thisPath.nodes[0])) {
+				if (thisNode.type != OFFCURVE) { // on-curve
+					if (prevNode && prevNode.type != OFFCURVE) {
+						CGFloat unstraightness = fabs(thisNode.position.x - prevNode.position.x);
+						CGFloat unstraightnessY = fabs(thisNode.position.y - prevNode.position.y);
+						if (unstraightness > unstraightnessY) {
+							unstraightness = unstraightnessY;
+						}
+						if (unstraightness > 0.1 && unstraightness < 20.0) {
+							CGFloat opacity = 3.0 / unstraightness;
+							if (opacity > 1.0) {
+								opacity = 1.0;
+							}
+							[[NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.0 alpha:opacity] set];
+							NSBezierPath *lineMarker = [NSBezierPath new];
+							[lineMarker moveToPoint:prevNode.position];
+							[lineMarker lineToPoint:thisNode.position];
+							[lineMarker setLineCapStyle:NSRoundLineCapStyle];
+							[lineMarker setLineWidth:scaledLineWidth];
+							[lineMarker stroke];
+						}
+					}
+				}
+			}
+			prevNode = thisNode;
 		}
 	}
 }
 
 - (void)markDuplicateSegments:(GSLayer *)thisLayer {
 	/*
-	Collect identical segments and mark them.
-	*/
+	 Collect identical segments and mark them.
+	 */
 	CGFloat zoomFactor = [self getScale];
 	NSMutableArray<GSPathSegment *> *segments = [NSMutableArray new];
 	for (GSPath *path in thisLayer.paths) {
@@ -343,17 +343,17 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	NSMutableArray *duplicates = [NSMutableArray new];
 	for (int idx = 0; idx < [segments count]; idx++) {
 		GSPathSegment *s1 = segments[idx];
-        for (int jdx = idx + 1; jdx < [segments count]; jdx++) {
+		for (int jdx = idx + 1; jdx < [segments count]; jdx++) {
 			GSPathSegment *s2 = segments[jdx];
-            if (s1.countOfPoints != s2.countOfPoints) {
-                continue;
-            }
-            bool segmentIsTheSame = YES;
-            for (int pIdx = 0; pIdx < s1.countOfPoints; pIdx++) {
-                bool pointIsTheSame = GSPointsEqual(s1.segmentStruct.elements[pIdx], s2.segmentStruct.elements[pIdx], 0.0001);
-                segmentIsTheSame = segmentIsTheSame && pointIsTheSame;
-            }
-            if (segmentIsTheSame) {
+			if (s1.countOfPoints != s2.countOfPoints) {
+				continue;
+			}
+			bool segmentIsTheSame = YES;
+			for (int pIdx = 0; pIdx < s1.countOfPoints; pIdx++) {
+				bool pointIsTheSame = GSPointsEqual(s1.segmentStruct.elements[pIdx], s2.segmentStruct.elements[pIdx], 0.0001);
+				segmentIsTheSame = segmentIsTheSame && pointIsTheSame;
+			}
+			if (segmentIsTheSame) {
 				[duplicates addObject:s1];
 			}
 		}
@@ -383,8 +383,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (void)markCrossedHandles:(GSLayer *)thisLayer zoomFactor:(CGFloat)zoomFactor {
 	/*
-	Marks crossed handles.
-	*/
+	 Marks crossed handles.
+	 */
 	for (GSPath *thisPath in thisLayer.paths) {
 		int nodeIndex = -1;
 		for (GSNode *thisNode in thisPath.nodes) {
@@ -416,8 +416,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 - (void)markZeroHandles:(GSLayer *)thisLayer handleSize:(int)handleSize {
 	/*
-	Marks all BCPs that are retracted into the nearest oncurve point.
-	*/
+	 Marks all BCPs that are retracted into the nearest oncurve point.
+	 */
 	[[NSColor colorWithCalibratedRed:0.7 green:0.1 blue:0.9 alpha:0.7] set];
 	NSBezierPath *purpleCircles = [NSBezierPath new];
 
@@ -437,39 +437,39 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 }
 
 - (void)markNodesOffMetrics:(GSLayer *)thisLayer handleSize:(int)handleSize {
-    /*
-    Marks all BCPs that are retracted into the nearest oncurve point.
-    */
-    [[NSColor colorWithCalibratedRed:.0 green:.6 blue:0.2 alpha:0.7] set];
-    NSBezierPath *greenCircles = [NSBezierPath new];
-    
-    for (GSPath *thisPath in thisLayer.paths) {
-        for (GSNode *thisNode in thisPath.nodes) {
-            if (thisNode.type == OFFCURVE) {
-                continue;
-            }
-            for (GSMetricValue *thisMetric in thisLayer.metrics) {
-                float diff = thisMetric.position - thisNode.position.y;
-                if (diff != 0.0 && -1.9 < diff && diff < 1.9) {
-                    NSBezierPath *dot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
-                    [greenCircles appendBezierPath:dot];
-                    break;
-                }
-            }
-        }
-    }
-    
-    float zoomFactor = [self getScale];
-    CGFloat dash[2] = {2.0 / zoomFactor, 2.0 / zoomFactor};
-    [greenCircles setLineDash:dash count:2 phase:2.0 / zoomFactor];
-    [greenCircles setLineWidth:2.0 / zoomFactor];
-    [greenCircles stroke];
+	/*
+	 Marks all BCPs that are retracted into the nearest oncurve point.
+	 */
+	[[NSColor colorWithCalibratedRed:.0 green:.6 blue:0.2 alpha:0.7] set];
+	NSBezierPath *greenCircles = [NSBezierPath new];
+
+	for (GSPath *thisPath in thisLayer.paths) {
+		for (GSNode *thisNode in thisPath.nodes) {
+			if (thisNode.type == OFFCURVE) {
+				continue;
+			}
+			for (GSMetricValue *thisMetric in thisLayer.metrics) {
+				float diff = thisMetric.position - thisNode.position.y;
+				if (diff != 0.0 && -1.9 < diff && diff < 1.9) {
+					NSBezierPath *dot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
+					[greenCircles appendBezierPath:dot];
+					break;
+				}
+			}
+		}
+	}
+
+	float zoomFactor = [self getScale];
+	CGFloat dash[2] = {2.0 / zoomFactor, 2.0 / zoomFactor};
+	[greenCircles setLineDash:dash count:2 phase:2.0 / zoomFactor];
+	[greenCircles setLineWidth:2.0 / zoomFactor];
+	[greenCircles stroke];
 }
 
 - (void)conditionalContextMenus:(NSMenu *)menu {
 	/*
-	Builds contextual menus for plug-in options.
-	*/
+	 Builds contextual menus for plug-in options.
+	 */
 
 	NSBundle *bundle = [NSBundle bundleForClass:[self class]];
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
