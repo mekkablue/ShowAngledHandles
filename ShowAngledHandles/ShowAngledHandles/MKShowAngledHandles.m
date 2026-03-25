@@ -22,6 +22,7 @@
 // #import "GSEditViewController.h"
 // #import "GSWindowController.h"
 #import <GlyphsCore/GSGeometrieHelper.h>
+#import <GlyphsCore/GSMetric.h>
 
 @interface GSPath (Glyphs2)
 - (NSArray *)pathSegments;
@@ -445,12 +446,21 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	[[NSColor colorWithCalibratedRed:.0 green:.6 blue:0.2 alpha:0.7] set];
 	NSBezierPath *greenCircles = [NSBezierPath new];
 
+	GSCase glyphCase = [[thisLayer glyph] case];
+
 	for (GSPath *thisPath in thisLayer.paths) {
 		for (GSNode *thisNode in thisPath.nodes) {
 			if (thisNode.type == OFFCURVE) {
 				continue;
 			}
 			for (GSMetricValue *thisMetric in thisLayer.metrics) {
+				GSMetricsType metricType = thisMetric.metric.type;
+				if (glyphCase == GSUppercase && (metricType == GSMetricsTypexHeight || metricType == GSMetricsTypeMidHeight)) {
+					continue;
+				}
+				if (glyphCase == GSLowercase && (metricType == GSMetricsTypeCapHeight || metricType == GSMetricsTypeSlantHeight)) {
+					continue;
+				}
 				float diff = thisMetric.position - thisNode.position.y;
 				if (diff != 0.0 && -1.9 < diff && diff < 1.9) {
 					NSBezierPath *dot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
