@@ -305,7 +305,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEPLOYMENT_LOCATION = YES;
 				DEVELOPMENT_TEAM = "";
 				DSTROOT = "$(USER_LIBRARY_DIR)/Application Support/Glyphs 3/Plugins";
@@ -328,7 +328,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "\"$(SYSTEM_APPS_DIR)/Glyphs 3.app/Contents/Frameworks\"";
 				GCC_PREFIX_HEADER = "ShowAngledHandles/ShowAngledHandles-Prefix.pch";
