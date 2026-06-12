@@ -181,14 +181,17 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 					otherNode = nextNode;
 				}
 				if (otherNode) {
-					if ((thisNode.position.x - otherNode.position.x) * (thisNode.position.y - otherNode.position.y) != 0.0) {
+					NSPoint P1 = thisNode.position;
+					NSPoint P2 = otherNode.position;
+
+					if ((P1.x - P2.x) * (P1.y - P2.y) != 0.0) {
 						if (!onlyShowCloseToStraightHandles) {
 							[self drawHandleForNode:thisNode];
 						}
 						else {
-							CGFloat angle = fabs(fmodf(angleBetweenPoints(thisNode.position, otherNode.position), 90.0));
-							CGFloat diffX = fabs(thisNode.position.x - otherNode.position.x);
-							CGFloat diffY = fabs(thisNode.position.y - otherNode.position.y);
+							CGFloat angle = fabs(fmodf(angleBetweenPoints(P1, P2), 90.0));
+							CGFloat diffX = fabs(P1.x - P2.x);
+							CGFloat diffY = fabs(P1.y - P2.y);
 							BOOL almostStraight = diffX <= 2.0 || diffY <= 2.0 || angle < 8.0 || angle > 82.0;
 							if (almostStraight) {
 								[self drawHandleForNode:thisNode];
