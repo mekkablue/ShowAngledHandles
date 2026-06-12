@@ -72,10 +72,6 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	return NSEventModifierFlagControl;
 }
 
-- (void)drawForegroundForLayer:(GSLayer *)layer {
-	[self drawForegroundForLayer:layer options:nil];
-}
-
 - (void)drawForegroundForLayer:(GSLayer *)layer options:(NSDictionary *)options {
 	// Whatever you draw here will be displayed IN FRONT OF the paths.
 	// To get an NSBezierPath from a GSPath, use the bezierPath method:
@@ -119,10 +115,6 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)drawBackgroundForInactiveLayer:(GSLayer *)Layer {
-	// Whatever you draw here will be displayed behind the paths, but for inactive masters.
-}
-
 - (float)getScale {
 	// [self getScale]; returns the current scale factor of the Edit View UI.
 	// Divide any scalable size by this value in order to keep the same apparent pixel size.
@@ -135,9 +127,9 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	}
 }
 
-- (void)setController:(NSViewController<GSGlyphEditViewControllerProtocol> *)Controller {
+- (void)setController:(GSEditViewController *)controller {
 	// Use [self controller]; as object for the current view controller.
-	_editViewController = Controller;
+	_editViewController = controller;
 }
 
 - (BOOL)conditionsAreMetForDrawing {
@@ -328,11 +320,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	CGFloat zoomFactor = [self getScale];
 	NSMutableArray<GSPathSegment *> *segments = [NSMutableArray new];
 	for (GSPath *path in thisLayer.paths) {
-		if ([path respondsToSelector:@selector(pathSegments)]) {
-			[segments addObjectsFromArray:[path pathSegments]];
-		} else {
-			[segments addObjectsFromArray:[path segments]];
-		}
+		[segments addObjectsFromArray:[path segments]];
 	}
 
 	NSMutableArray *duplicates = [NSMutableArray new];
