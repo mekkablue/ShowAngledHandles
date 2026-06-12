@@ -170,14 +170,14 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		GSNode *prevNode = [thisPath.nodes lastObject];
 		int nodeIndex = 0;
 		for (GSNode *thisNode in thisPath.nodes) {
-			if (thisNode.type == OFFCURVE) { // BCP
+			if (thisNode.type == GSNodeTypeOffCurve) { // BCP
 				// determine other node for angle measurement:
 				GSNode *nextNode = [thisPath nodeAtIndex:nodeIndex + 1];
 				GSNode *otherNode = nil;
-				if (prevNode.type != OFFCURVE) {
+				if (prevNode.type != GSNodeTypeOffCurve) {
 					otherNode = prevNode;
 				}
-				else if (nextNode.type != OFFCURVE) {
+				else if (nextNode.type != GSNodeTypeOffCurve) {
 					otherNode = nextNode;
 				}
 				if (otherNode) {
@@ -211,7 +211,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	CGFloat handleSize = [self zoomedHandleSize];
 
 	// offcurves are a little smaller:
-	if (node.type == OFFCURVE) {
+	if (node.type == GSNodeTypeOffCurve) {
 		handleSize *= 0.8;
 	}
 	// selected handles are a little bigger:
@@ -285,8 +285,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		GSNode *prevNode = [thisPath.nodes lastObject];
 		for (GSNode *thisNode in thisPath.nodes) {
 			if ([thisPath closed] || (thisNode != thisPath.nodes[0])) {
-				if (thisNode.type != OFFCURVE) { // on-curve
-					if (prevNode && prevNode.type != OFFCURVE) {
+				if (thisNode.type != GSNodeTypeOffCurve) { // on-curve
+					if (prevNode && prevNode.type != GSNodeTypeOffCurve) {
 						CGFloat unstraightness = fabs(thisNode.position.x - prevNode.position.x);
 						CGFloat unstraightnessY = fabs(thisNode.position.y - prevNode.position.y);
 						if (unstraightness > unstraightnessY) {
@@ -331,11 +331,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 			if (s1.countOfPoints != s2.countOfPoints) {
 				continue;
 			}
-			bool segmentIsTheSame = YES;
-			for (int pIdx = 0; pIdx < s1.countOfPoints; pIdx++) {
-				bool pointIsTheSame = GSPointsEqual(s1.segmentStruct.elements[pIdx], s2.segmentStruct.elements[pIdx], 0.0001);
-				segmentIsTheSame = segmentIsTheSame && pointIsTheSame;
-			}
+			bool segmentIsTheSame = [s1 isEqualToSegment:s2];
 			if (segmentIsTheSame) {
 				[duplicates addObject:s1];
 			}
@@ -345,12 +341,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		NSBezierPath *duplicateMarker = [NSBezierPath new];
 		for (GSPathSegment *segment in duplicates) {
 			[duplicateMarker moveToPoint:[segment pointAtIndex:0]];
-
-			if (segment->count == 2) {
-				[duplicateMarker lineToPoint:[segment pointAtIndex:1]];
-			} else {
-				[duplicateMarker curveToPoint:[segment pointAtIndex:3] controlPoint1:[segment pointAtIndex:1] controlPoint2:[segment pointAtIndex:2]];
-			}
+			[segment drawInPen:duplicateMarker];
 		}
 		[[NSColor purpleColor] set];
 		[duplicateMarker setLineWidth:3.0 / zoomFactor];
@@ -372,7 +363,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 		int nodeIndex = -1;
 		for (GSNode *thisNode in thisPath.nodes) {
 			nodeIndex++;
-			if (thisNode.type == CURVE) {
+			if (thisNode.type == GSNodeTypeCubicCurve) {
 				NSPoint pointA = thisNode.position;
 				NSPoint pointB = [thisPath nodeAtIndex:nodeIndex - 1].position;
 				NSPoint pointC = [thisPath nodeAtIndex:nodeIndex - 2].position;
@@ -407,8 +398,8 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	for (GSPath *thisPath in thisLayer.paths) {
 		GSNode *prevNode = [thisPath.nodes lastObject];
 		for (GSNode *thisNode in thisPath.nodes) {
-			if (((thisNode.type == OFFCURVE && prevNode.type != OFFCURVE) ||
-				 (thisNode.type != OFFCURVE && prevNode.type == OFFCURVE)) &&
+			if (((thisNode.type == GSNodeTypeOffCurve && prevNode.type != GSNodeTypeOffCurve) ||
+				 (thisNode.type != GSNodeTypeOffCurve && prevNode.type == GSNodeTypeOffCurve)) &&
 				GSPointsEqual(thisNode.position, prevNode.position, 0.01)) {
 				NSBezierPath *handleDot = [self roundDotForPoint:thisNode.position handleSize:handleSize];
 				[purpleCircles appendBezierPath:handleDot];
@@ -430,10 +421,10 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 
 	for (GSPath *thisPath in thisLayer.paths) {
 		for (GSNode *thisNode in thisPath.nodes) {
-			if (thisNode.type == OFFCURVE) {
+			if (thisNode.type == GSNodeTypeOffCurve) {
 				continue;
 			}
-			for (GSMetricValue *thisMetric in thisLayer.metrics) {
+			for (GSMetricStore *thisMetric in thisLayer.metrics) {
 				GSMetricsType metricType = thisMetric.metric.type;
 				if (glyphCase == GSUppercase && (metricType == GSMetricsTypexHeight || metricType == GSMetricsTypeMidHeight)) {
 					continue;
