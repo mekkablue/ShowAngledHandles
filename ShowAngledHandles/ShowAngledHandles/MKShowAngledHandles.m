@@ -7,20 +7,12 @@
 //
 
 #import "MKShowAngledHandles.h"
-#import <GlyphsCore/GSComponent.h>
-#import <GlyphsCore/GSFilterPlugin.h>
-#import <GlyphsCore/GSFont.h>
 #import <GlyphsCore/GSFontMaster.h>
-#import <GlyphsCore/GSGlyph.h>
 #import <GlyphsCore/GSLayer.h>
 #import <GlyphsCore/GSNode.h>
 #import <GlyphsCore/GSPath.h>
 #import <GlyphsCore/GSPathSegment.h>
 #import <GlyphsCore/GSWindowControllerProtocol.h>
-#import <GlyphsCore/GlyphsFilterProtocol.h>
-#import <GlyphsCore/GSProxyShapes.h>
-// #import "GSEditViewController.h"
-// #import "GSWindowController.h"
 #import <GlyphsCore/GSGeometrieHelper.h>
 #import <GlyphsCore/GSMetric.h>
 

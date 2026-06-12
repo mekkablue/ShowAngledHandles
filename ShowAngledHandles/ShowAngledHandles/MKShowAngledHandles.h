@@ -8,7 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <GlyphsCore/GlyphsReporterProtocol.h>
-#import <GlyphsCore/GSGlyphViewControllerProtocol.h>
 
 @interface MKShowAngledHandles : NSObject <GlyphsReporter>
 @end
