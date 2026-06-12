@@ -263,7 +263,7 @@ CGFloat angleBetweenPoints(NSPoint firstPoint, NSPoint secondPoint) {
 	// cross (intersection):
 	if (!smoothHandle) {
 		[[NSColor orangeColor] set];
-		CGFloat offset = 10.0;
+		CGFloat offset = 10.0 * pow(zoomFactor, 0.2);
 		CGFloat leftX = thisPoint.x - offset / zoomFactor;
 		CGFloat rightX = thisPoint.x + offset / zoomFactor;
 		CGFloat lowerY = thisPoint.y - offset / zoomFactor;
